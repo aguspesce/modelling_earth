@@ -5,7 +5,7 @@ Uses versioneer to manage version numbers using git tags.
 """
 from setuptools import setup, find_packages
 
-# import versioneer
+import versioneer
 
 
 NAME = "modelling_earth"
@@ -20,9 +20,8 @@ DESCRIPTION = ""
 KEYWORDS = ""
 # with open("README.rst") as f:
 #     LONG_DESCRIPTION = "".join(f.readlines())
-# VERSION = versioneer.get_version()
-VERSION = 0.1
-# CMDCLASS = versioneer.get_cmdclass()
+VERSION = versioneer.get_version()
+CMDCLASS = versioneer.get_cmdclass()
 CLASSIFIERS = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
@@ -69,5 +68,5 @@ if __name__ == "__main__":
         keywords=KEYWORDS,
         install_requires=INSTALL_REQUIRES,
         python_requires=PYTHON_REQUIRES,
-        # cmdclass=CMDCLASS,
+        cmdclass=CMDCLASS,
     )
