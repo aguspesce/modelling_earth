@@ -1,0 +1,14 @@
+name: modelling_earth
+channels:
+    - conda-forge
+dependencies:
+    - python=3.7
+    - numpy
+    - scipy
+    - xarray
+    # Optional dependencies
+    - matplotlib
+    - jupyter
+    - jupyterlab
+    - jupytext
+    - ipython
