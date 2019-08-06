@@ -1,0 +1,2 @@
+include versioneer.py
+include modelling_earth/_version.py
