@@ -14,7 +14,7 @@ temperatures = litho_astheno_temperatures(temperatures, boundary_depth=100)
 
 print(temperatures)
 temperatures = add_subducting_slab(
-    temperatures, xmin=250, xmax=500, slope=0.5, thickness=100
+    temperatures, xmin=250, xmax=800, slope=15, thickness=100
 )
 print(temperatures)
 

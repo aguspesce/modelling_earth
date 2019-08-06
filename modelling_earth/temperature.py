@@ -68,7 +68,7 @@ def add_subducting_slab(
     """
     Add temperature of a subducting slab to a temperature grid
     """
-    top = slope * (temperatures.x - xmin)
+    top = np.tan(np.radians(slope)) * (temperatures.x - xmin)
     bottom = top - thickness
     temperatures_with_slab = xr.where(
         (temperatures.coords["x"] < xmax)
