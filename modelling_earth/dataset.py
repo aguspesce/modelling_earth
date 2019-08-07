@@ -64,6 +64,39 @@ def time_array(path, number, step):
         time = np.append(time, tempo)
     return time
     
+
+def read_temperature(path, parameter_file, step):
+    """
+    Create an array of the temperature for a given time step from the output 
+file of the md3d program.
+
+    Parameters:
+    ----------
+     Parameters:
+    ----------
+    path : str
+        Path to the parameter file.
+    parameter_file_name : str 
+        Name of the parameter file.
+    step : float
+        Time step between time file.
+    
+    Returns :
+    -------
+    temperature : numpy array
+        Array of the temperature for a given time step.
+    """
+    # Obtaint the shape
+    coordinate, shape = coordinates(path, parameter_file)
+    # Read data
+    filename = 'Temper_{}.txt'.format(step)
+    a = np.loadtxt(os.path.join(path, filename), unpack=True, 
+                   comments='P', skiprows=2)
+    tt = a*1.0
+    tt[np.abs(tt) < 1.0E-200] = 0
+    tt = np.reshape(tt, shape, order='F')
+    return temperature
+
    
 def dataset_2d(path, parameter_file, step):
     """
@@ -96,7 +129,7 @@ def dataset_2d(path, parameter_file, step):
     coordinate, size = coordinates(path, parameter_file)
     coords = {'z': coordinate[2], 'x': coordinate[0]}
 
-    temperatura = read_temperature()
+    temperatura = read_temperature(path, parameter_file, step)
     
     # Create the dataset
     data_vars = {'temperature': (['z', 'x'], temperature),
