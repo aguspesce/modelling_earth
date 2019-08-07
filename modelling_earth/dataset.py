@@ -261,8 +261,7 @@ the md3d program.
     return strain
 
 
-   
-def dataset_2d(path, parameter_file, step):
+def dataset(path, parameter_file, step):
     """
     Generates a dataset of the output files from the md3d program for a given 
     time step.
@@ -273,7 +272,7 @@ def dataset_2d(path, parameter_file, step):
         Path to the parameter file.
     parameter_file_name : str 
         Name of the parameter file. 
-    step : 
+    step : float
         Time step.
         
     Returns: 
@@ -290,23 +289,29 @@ def dataset_2d(path, parameter_file, step):
         * Viscosity factor
         * Stain
     """
+    # Read the coordinate
     coordinate, size = coordinates(path, parameter_file)
-    coords = {'z': coordinate[2], 'x': coordinate[0]}
-
-    
+    # Read the data
+    temperatura = read_temperature(path, parameter_file, step)
+    velocity = read_velocity(path, parameter_file, step)
+    density = read_density(path, parameter_file, step)
+    radiogenic_heat = read_radiogenic_heat(path, parameter_file, step)
+    viscosity_factor = read_viscosity_factor(path, parameter_file, step)
+    strain = read_strain(path, step, size)
     # Create the dataset
-    data_vars = {'temperature': (['z', 'x'], temperature),
-                 'velocity_x': (['z', 'x'], velocity_x),
-                 'velocity_z': (['z', 'x'], velocity_z),
-                 'velocity':(['z', 'x'], velocity),
-                 'density': (["z", "x"], density), 
-                 'radiogenic_heat': (['z', 'x'], radiogenic),
-                 'viscosity_factor': (['z', 'x'], viscosity_factor),
-                 'stain': (['z', 'x'], strain)}
-   
-    dataset = xr.Dataset(data_vars, coords=coords)
-    
-    return dataset
+    coords = {'x': coordinate[0], 'y': coordinate[1], 
+              'z(depth)': coordinate[2]}
+    data_vars = {'temperature': (['x', 'y', 'z(depth)'], temperature),
+                 'velocity_x': (['x', 'y', 'z(depth)'], velocity_x[0]),
+                 'velocity_y': (['x', 'y', 'z(depth)'], velocity_y[1])
+                 'velocity_z': (['x', 'y', 'z(depth)'], velocity_z[2]),
+                 'velocity':(['x', 'y', 'z(depth)'], velocity),
+                 'density': (['x', 'y', 'z(depth)'], density), 
+                 'radiogenic_heat': (['x', 'y', 'z(depth)'], radiogenic),
+                 'viscosity_factor': (['x', 'y', 'z(depth)'], viscosity_factor),
+                 'stain': (['x', 'y', 'z(depth)'], strain)}
+   dataset = xr.Dataset(data_vars, coords=coords)
+   return dataset
 
 
 def lagrangian_point(path, step, rank=4):
@@ -318,13 +323,10 @@ def lagrangian_point(path, step, rank=4):
     -----------
     path : str
         Path to the parameter file.
-        
     step : 
         Time step.
-    
-    rank : 
+    rank : float
         Number of processors used in the simulation.
-    
     Returns: 
     -------
         dataset : xr.Dataset
