@@ -58,7 +58,7 @@ def time_array(path, number, step):
     for cont in range(0, number + step, step):
         filename = 'Tempo_' + str(cont) + '.txt'
         ft = open(os.path.join(path, filename), 'r')
-        tempo = float(ft.readline().split()[1])/1000000.0
+        tempo = float(ft.readline().split()[1]) * e-6
         time = np.append(time, tempo)
     return time
     
