@@ -23,11 +23,11 @@ def coordinates(path):
     parameter_file = 'param_1.5.3.txt'
     with open(os.path.join(path, parameter_file), 'r') as f:
         line = f.readline()
-        f.close()
         line = line.split()
         nx, ny, nz = int(line[0]), int(line[1]), int(line[2])
         line = f.readline()
         line = line.split()
+        f.close()
         x_max, y_max, z_max = float(line[0]), float(line[1]), float(line[2])
     # Convert max coordinates to km
     x_max *= 1e-3
@@ -67,7 +67,7 @@ def time_array(path, number, step):
             tempo = float(f.readline().split()[1])
             f.close()
         # Divide by 1-6 to transform the time scale into Ma
-        tempo *= e-6
+        tempo *= 1e-6
         time = np.append(time, tempo)
     return time
     
@@ -352,4 +352,8 @@ def lagrangian_point(path, step, rank=4):
     coords={'point': (['point'], point)}
     ds = xr.Dataset(data, coords=coords)
     return ds
+
+
+
+
    
