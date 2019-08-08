@@ -70,196 +70,52 @@ def time_array(path, number, step):
         tempo *= 1e-6
         time = np.append(time, tempo)
     return time
-    
+   
 
-def read_temperature(path, step):
+def read_data(path, step, quantity):
     """
-    Create an array of the temperature for a given time step from the output 
-    file of the md3d program.
-
-    Parameters:
-    ----------
+    Read the md3d output data.
+    
+    Parameter :
+    ---------
     path : str
         Path to the folder where the md3d program output files are located.
     parameter_file_name : str 
         Name of the parameter file.
     step : float
         Time step between time file.
-    
+    quantity : str
+        Output data to read
+
     Returns :
-    -------
-    temperature : numpy array
-        Array of the temperature for a given time step.
+    data: np.array or tuple
+        If quantity is 'velocity', the data format is a tuple else it is
+        an array.
     """
+    quantities = {'temperature': 'Temper', 'velocity': 'Veloc_fut',   
+                  'density': 'Rho', 'radiogenic_heat': 'H',
+                  'viscosity_factor': 'Geoq', 'strain': 'strain'}
     # Obtain the shape
     coordinate, shape = coordinates(path)
     # Read data
-    filename = 'Temper_{}.txt'.format(step)
-    a = np.loadtxt(os.path.join(path, filename), unpack=True, 
-                   comments='P', skiprows=2)
-    tt = a*1.0
-    tt[np.abs(tt) < 1.0E-200] = 0
-    # Reshape
-    temperature = np.reshape(tt, shape, order='F')
-    return temperature
+    filename = "{}_{}.txt".format(quantities[quantity], step)
+    data = np.loadtxt(os.path.join(path, filename), unpack=True, 
+                      comments='P', skiprows=2)
+    if (quantity != 'velocity'): 
+        data[np.abs(data) < 1.0E-200] = 0
+        # Reshape
+        data_out = np.reshape(data, shape, order='F')
+    else:
+        data[np.abs(data) < 1.0E-200] = 0
+        data_x, data_y, data_z = data[0::3], data[1::3], data[2::3]
+        # Reshape
+        data_x = np.reshape(data_x, shape, order='F')
+        data_y = np.reshape(data_y, shape, order='F')
+        data_z = np.reshape(data_z, shape, order='F')
+        data_out = (data_x, data_y, data_z)
+    return data_out
 
-
-def read_velocity(path, step):
-    """
-    Create a tuple of the velocity along each direction: ``x``, ``y``,``z`` for 
-    a given time step from the output file of the md3d program.
-
-    Parameters:
-    ----------
-    path : str
-        Path to the folder where the md3d program output files are located.
-    step : float
-        Time step between time file.
-    
-    Returns :
-    -------
-    velocity : tuple
-        Velocity array along each direction: ``x``, ``y``,``z`` for a given 
-    time step [m/s^2]. 
-    """
-    # Obtain the shape
-    coordinate, shape = coordinates(path)
-    # Read data
-    filename = 'Veloc_fut_{}.txt'.format(step) 
-    a = np.loadtxt(os.path.join(path, filename), unpack=True,  
-                     comments='P', skiprows=2)
-    vel = a*1.0
-    vel[np.abs(vel) < 1.0E-200] = 0
-    v_x, v_y, v_z = vel[0::3], vel[1::3], vel[2::3]
-    # Reshape
-    v_x = np.reshape(v_x, shape, order='F')
-    v_y = np.reshape(v_y, shape, order='F')
-    v_z = np.reshape(v_z, shape, order='F')
-    velocity = (v_x, v_y, v_z)
-    return velocity
-
-
-def read_density(path, step):
-    """
-    Create an array of the density for a given time step from the output file 
-    of the md3d program.
-
-    Parameters:
-    ----------
-    path : str
-        Path to the folder where the md3d program output files are located.
-    step : float
-        Time step between time file.
-    
-    Returns :
-    -------
-    density : numpy array
-        Array of the density for a given time step [kg/m^3].
-    """
-    # Obtain the shape
-    coordinate, shape = coordinates(path)
-    # Read data
-    filename = 'Rho_{}.txt'.format(step)
-    a = np.loadtxt(os.path.join(path, filename), unpack=True,
-                   comments='P', skiprows=2)
-    dens = a*1.0
-    dens[np.abs(dens) < 1.0E-200] = 0
-    # Reshape
-    density = np.reshape(dens, shape, order='F')
-    return density
-
-
-def read_radiogenic_heat(path, step):
-    """
-    Create an array of the radiogenic heat production for a given time step 
-    from the output file of the md3d program.
-
-    Parameters:
-    ----------
-    path : str
-        Path to the folder where the md3d program output files are located.
-    step : float
-        Time step between time file.
-    
-    Returns :
-    -------
-    radiogenic_heat : numpy array
-        Array of the radiogenic heat production for a given time step [W/m^3].
-    """
-    # Obtain the shape
-    coordinate, shape = coordinates(path)
-    # Read data
-    filename = 'H_{}.txt'.format(step)
-    a = np.loadtxt(os.path.join(path, filename), unpack=True, 
-                   comments='P', skiprows=2)
-    r_heat = a*1.0
-    r_heat[np.abs(r_heat) < 1.0E-200] = 0
-    # Reshape
-    radiogenic_heat = np.reshape(r_heat, shape, order='F')
-    return radiogenic_heat
-
-
-def read_viscosity_factor(path, step):
-    """
-    Create an array of the viscosity factor for a given time step from the 
-    output file of the md3d program.
-
-    Parameters:
-    ----------
-    path : str
-        Path to the folder where the md3d program output files are located.
-    step : float
-        Time step between time file.
-    
-    Returns :
-    -------
-    viscosity_factor : numpy array
-        Array of the radiogenic heat production for a given time step [W/m^3].
-    """
-    # Obtain the shape
-    coordinate, shape = coordinates(path)
-    # Read data    
-    filename = 'Geoq_{}.txt'.format(step)
-    a = np.loadtxt(os.path.join(path, filename), unpack=True, 
-                   comments='P', skiprows=2)
-    vis = a*1.0
-    vis[np.abs(vis) < 1.0E-200] = 0
-    # Reshape
-    viscosity_factor = np.reshape(vis, shape, order='F')
-    return viscosity_factor
-
-
-def read_strain(path, step):
-    """
-    Create an array of the strain for a given time step from the output file
-    of the md3d program.
-
-    Parameters:
-    ----------
-    path : str
-        Path to the folder where the md3d program output files are located.
-    step : float
-        Time step between time file.
-    
-    Returns :
-    -------
-    strain : numpy array
-        Array of the strain for a given time step [W/m^3].
-    """
-    # Obtain the shape
-    coordinate, shape = coordinates(path)
-    # Read data  
-    filename = 'strain_{}.txt'.format(step)
-    a = np.loadtxt(os.path.join(path, filename), unpack=True,
-                   comments='P', skiprows=2)
-    st = a*1.0
-    st[np.abs(st) < 1.0E-200] = 0
-    # Reshape
-    strain = np.reshape(st, shape, order='F')
-    return strain
-
-
-def dataset(path, step):
+def read_md3d_data(path, step):
     """
     Generates a dataset of the output files from the md3d program for a given 
     time step.
@@ -288,12 +144,12 @@ def dataset(path, step):
     # Read the coordinate
     coordinate, size = coordinates(path)
     # Read the data
-    temperature = read_temperature(path, step)
-    velocity = read_velocity(path, step)
-    density = read_density(path, step)
-    radiogenic_heat = read_radiogenic_heat(path, step)
-    viscosity_factor = read_viscosity_factor(path, step)
-    strain = read_strain(path, step)
+    temperature = read_data(path, step, quantity='temperature')
+    velocity = read_data(path, step, quantity='velocity')
+    density = read_data(path, step, quantity='density')
+    radiogenic_heat = read_data(path, step,quantity='radiogenic_heat')
+    viscosity_factor = read_data(path, step, quantity='viscosity_factor')
+    strain = read_data(path, step, quantity='strain')
     # Create the dataset
     coords = {'z': coordinate[2], 'y': coordinate[1], 'x': coordinate[0]}
     data_vars = {'temperature': (['z', 'y', 'x'], temperature.T),
