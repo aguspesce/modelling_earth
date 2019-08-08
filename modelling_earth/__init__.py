@@ -5,7 +5,7 @@ from .temperature import (
     add_subducting_slab, empty_temperature_grid, litho_astheno_temperatures,
 )
 from .dataset import (
-    coordinates, time_array, dataset_2d, lagrangian_point
+    coordinates, time_array, dataset, lagrangian_point
     )
 
 
