@@ -9,8 +9,8 @@ import xarray as xr
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
-from modelling_earth import (coordinates, time_array, dataset,      
-                     lagrangian_point, read_temperature)
+from modelling_earth import (coordinates, time_array, read_md3d_data,      
+                     lagrangian_point)
 
 
 script_path = os.path.dirname(os.path.abspath(__file__))
@@ -30,8 +30,7 @@ print('time in Ma:', tempo)
 ##print(particle)
 
 #Generate the 2D dataset for the time step 0
-data = dataset(path, step=0)
-
+data = read_md3d_data(path, step=0)
 # Plot temperature
 temp = data.temperature
 temp_2d = temp.sel(y=0)
