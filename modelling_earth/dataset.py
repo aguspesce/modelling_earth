@@ -5,7 +5,7 @@ import os
              
 def coordinates(path):
     """
-    Function to create arrays with the coordinate data.
+    Create grid coordinates from parameters file.
 
     Parameters:
     ----------
@@ -20,21 +20,26 @@ def coordinates(path):
         Total number of grid points along each direction: ``n_x``, ``n_y``, 
     ``n_z``.
     """
-    with open(os.path.join(path, 'param_1.5.3.txt'), 'r') as f:
+    parameter_file = 'param_1.5.3.txt'
+    with open(os.path.join(path, parameter_file), 'r') as f:
         line = f.readline()
         line = line.split()
         nx, ny, nz = int(line[0]), int(line[1]), int(line[2])
         line = f.readline()
         line = line.split()
-        lx, ly, lz = float(line[0]), float(line[1]), float(line[2])
+        x_max, y_max, z_max = float(line[0]), float(line[1]), float(line[2])
+    # Convert max coordinates to km
+    x_max *= 1e-3
+    y_max *= 1e-3
+    z_max *= 1e-3
     # Generate the grid in km
-    x = np.linspace(0, lx/1000, nx)
-    y = np.linspace(-ly/1000, 0, ny)
-    z = np.linspace(-lz/1000, 0, nz)
+    x = np.linspace(0, x_max, nx)
+    y = np.linspace(-y_max, 0, ny)
+    z = np.linspace(-z_max, 0, nz)
     shape = (nx, ny, nz)
-    coordenate = (x, y, z)
-    return coordenate, shape
-
+    coordinate = (x, y, z)
+    return coordinate, shape
+    
 
 def time_array(path, number, step):
     """
