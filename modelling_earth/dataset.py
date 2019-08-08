@@ -62,7 +62,7 @@ def time_array(path, number, step):
     time = []
     for cont in range(0, number + step, step):
         filename = 'Tempo_{}.txt'.format(cont)
-        ft = open(os.path.join(path, filename), 'r')
+        with open(os.path.join(path, filename), 'r') as ft:
         # Divide by 1-6 to transform the time scale into Ma
         tempo = float(ft.readline().split()[1]) * e-6
         time = np.append(time, tempo)
