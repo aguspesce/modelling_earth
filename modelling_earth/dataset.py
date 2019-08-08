@@ -23,6 +23,7 @@ def coordinates(path):
     parameter_file = 'param_1.5.3.txt'
     with open(os.path.join(path, parameter_file), 'r') as f:
         line = f.readline()
+        f.close()
         line = line.split()
         nx, ny, nz = int(line[0]), int(line[1]), int(line[2])
         line = f.readline()
@@ -62,9 +63,11 @@ def time_array(path, number, step):
     time = []
     for cont in range(0, number + step, step):
         filename = 'Tempo_{}.txt'.format(cont)
-        with open(os.path.join(path, filename), 'r') as ft:
+        with open(os.path.join(path, filename), 'r') as f:
+            tempo = float(f.readline().split()[1])
+            f.close()
         # Divide by 1-6 to transform the time scale into Ma
-        tempo = float(ft.readline().split()[1]) * e-6
+        tempo *= e-6
         time = np.append(time, tempo)
     return time
     
