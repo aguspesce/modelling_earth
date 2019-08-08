@@ -15,7 +15,7 @@ def coordinates(path):
     Returns :
     -------
     coordinate : tuple 
-        Coordinates in km (x, y, z) where z is the depth positive to down.
+        Coordinates in km (x, y, z).
     shape : tuple
         Total number of grid points along each direction: ``n_x``, ``n_y``, 
     ``n_z``.
@@ -286,16 +286,15 @@ def dataset(path, step):
     viscosity_factor = read_viscosity_factor(path, step)
     strain = read_strain(path, step)
     # Create the dataset
-    coords = {'x': coordinate[0], 'y': coordinate[1], 
-              'z(depth)': coordinate[2]}
-    data_vars = {'temperature': (['x', 'y', 'z(depth)'], temperature),
-                 'velocity_x': (['x', 'y', 'z(depth)'], velocity[0]),
-                 'velocity_y': (['x', 'y', 'z(depth)'], velocity[1]),
-                 'velocity_z': (['x', 'y', 'z(depth)'], velocity[2]),
-                 'density': (['x', 'y', 'z(depth)'], density), 
-                 'radiogenic_heat': (['x', 'y', 'z(depth)'], radiogenic_heat),
-                 'viscosity_factor': (['x', 'y', 'z(depth)'], viscosity_factor),
-                 'strain': (['x', 'y', 'z(depth)'], strain)}
+    coords = {'z': coordinate[2], 'y': coordinate[1], 'x': coordinate[0]}
+    data_vars = {'temperature': (['z', 'y', 'x'], temperature.T),
+                 'velocity_x': (['z', 'y', 'x'], velocity[0].T),
+                 'velocity_y': (['z', 'y', 'x'], velocity[1].T),
+                 'velocity_z': (['z', 'y', 'x'], velocity[2].T),
+                 'density': (['z', 'y', 'x'], density.T), 
+                 'radiogenic_heat': (['z', 'y', 'x'], radiogenic_heat.T),
+                 'viscosity_factor': (['z', 'y', 'x'], viscosity_factor.T),
+                 'strain': (['z', 'y', 'x'], strain.T)}
     dataset = xr.Dataset(data_vars, coords=coords)
     return dataset
 
