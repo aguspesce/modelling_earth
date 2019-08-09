@@ -29,9 +29,12 @@ def coordinates(path):
         line = line.split()
         f.close()
         x_max, y_max, z_max = float(line[0]), float(line[1]), float(line[2])
-    # Convert max coordinates to km
-    x_max *= 1e-3
-    y_max *= 1e-3
+    # Convert max coordinates to km
+
+    x_max *= 1e-3
+
+    y_max *= 1e-3
+
     z_max *= 1e-3
     # Generate the grid in km
     x = np.linspace(0, x_max, nx)
@@ -72,7 +75,8 @@ def time_array(path, number, step):
     return time
    
 
-def read_data(path, step, quantity):
+def read_data(path, step, quantity):
+
     """
     Read the md3d output data.
     
@@ -88,17 +92,22 @@ def read_data(path, step, quantity):
         Output data to read
 
     Returns :
+    -------
     data: np.array or tuple
         If quantity is 'velocity', the data format is a tuple else it is
         an array.
     """
-    quantities = {'temperature': 'Temper', 'velocity': 'Veloc_fut',   
-                  'density': 'Rho', 'radiogenic_heat': 'H',
-                  'viscosity_factor': 'Geoq', 'strain': 'strain'}
+    quantities = {'temperature': 'Temper', 'velocity': 'Veloc_fut',  
+ 
+                  'density': 'Rho',
+ 'radiogenic_heat': 'H',
+                  'viscosity_factor': 'Geoq', 'strain': 'strain'}
+
     # Obtain the shape
     coordinate, shape = coordinates(path)
     # Read data
-    filename = "{}_{}.txt".format(quantities[quantity], step)
+    filename = "{}_{}.txt".format(quantities[quantity], step)
+
     data = np.loadtxt(os.path.join(path, filename), unpack=True, 
                       comments='P', skiprows=2)
     if (quantity != 'velocity'): 
