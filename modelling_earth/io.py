@@ -116,11 +116,11 @@ def _read_parameters(path):
     # Add units
     parameters["coords_units"] = "m"
     parameters["times_units"] = "Ma"
-    parameters["temperature_units"] = "??"
+    parameters["temperature_units"] = "Kelvin"
     parameters["density_units"] = "kg/m^3"
     parameters["heat_units"] = "W/m^3"
-    parameters["viscosity_factor_units"] = "??"
-    parameters["strain_units"] = "??"
+    parameters["viscosity_factor_units"] = "dimensionless"
+    parameters["strain_units"] = "dimensionless"
     return parameters
 
 
