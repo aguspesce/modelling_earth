@@ -5,13 +5,13 @@ import numpy as np
 
 def quiver_velocity_2d(dataset, time, fil=4, temper_levels=None):
     '''
-    Plot a 2D velocity field of arrows over the temperature. 
-        
-    Parameter: 
+    Plot a 2D velocity field of arrows over the temperature.
+
+    Parameter:
     ---------
     dataset : :class:`xarray.Dataset`
         Array containing the velocity data.
-    all_time : 
+    all_time :
     time : float
         Time to generate the plot.
     fil : float
@@ -24,7 +24,7 @@ def quiver_velocity_2d(dataset, time, fil=4, temper_levels=None):
     xx, zz = np.meshgrid(dataset.x.values, dataset.z.values)
     # Plot the temperature
     plot_args = {'x': 'x', 'y': 'z'}
-    dataset.temperature.sel(time=time,y=0).plot.pcolormesh(**plot_args, 
+    dataset.temperature.sel(time=time,y=0).plot.pcolormesh(**plot_args,
                             levels=temper_levels)
     # Plot the velocity
     plt.quiver(xx[::f, ::f], zz[::f, ::f],
@@ -35,9 +35,9 @@ def quiver_velocity_2d(dataset, time, fil=4, temper_levels=None):
 
 def save_velocity_2d(dataset, save_path, fil=4, temper_levels=None):
     '''
-    Plot and save the 2D velocity field of arrows over the temperature field 
-    for each time.     
-    Parameter: 
+    Plot and save the 2D velocity field of arrows over the temperature field
+    for each time.
+    Parameter:
     ---------
     dataset : :class:`xarray.Dataset`
         Array containing the velocity data.
@@ -62,19 +62,31 @@ def save_velocity_2d(dataset, save_path, fil=4, temper_levels=None):
     print('Velocity plot save in:', save_path)
 
 
-def plot_data_2d(dataset, data, save_path, data_level):
-    for i in dataset.time:
+def plot_data_2d(dataset_data, data, save_path, data_levels):
+    '''
+    Plot and save the 2D data for each time.                                                Parameter:
+    ---------
+    dataset_data : :class:`xarray.Dataset`
+        Array containing the data to plot.
+    data : str
+        Name of the data to plot and save.
+    save_path : str
+        Path to the directory to save the plots.
+    data_levels : array
+        Array with the levels values to plot the data.
+    '''
+    for i in dataset_data.time:
         # Plot the data
         plt.figure(figsize=(10 * 2, 2.5 * 2))
         plot_args = {'x': 'x', 'y': 'z'}
-        dataset.data.sel(time=i,y=0).plot.pcolormesh(**plot_args, 
+        dataset_data.sel(time=i,y=0).plot.pcolormesh(**plot_args,
                          levels=data_levels)
         # Calculate the step to create the name of the plot
-        k = dataset.step.values[dataset.time.values == i.values][0]
+        k = dataset_data.step.values[dataset_data.time.values == i.values][0]
         plt.title('run/Time: %8.2f Ma'%i.values)
         filename = data + str(k).zfill(5) +".png"
         # Save the plot
         plt.savefig(os.path.join(save_path, filename))
         plt.close()
-    print(data, 'plot save in:', save_path)  
+    print(data, 'plot save in:', save_path)
 

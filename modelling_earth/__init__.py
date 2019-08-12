@@ -5,7 +5,8 @@ from .temperature import (
     add_subducting_slab, empty_temperature_grid, litho_astheno_temperatures,
 )
 from .io import read_md3d_data
-from .plot import quiver_velocity_2d, save_velocity_2d
+from .plot import (quiver_velocity_2d, save_velocity_2d, 
+                   plot_data_2d)
 
 
 # Get the version number through versioneer
