@@ -1,5 +1,6 @@
 """
-Read MD3D output files and plot temperature and velocity
+Read MD3D output files and plot the velocity and the temperature data with 
+created functions in the repository. 
 """
 import os
 import matplotlib.pyplot as plt
@@ -14,11 +15,14 @@ md3d_output_path = os.path.join(script_path, 'run')
 dataset = me.read_md3d_data(md3d_output_path)
 
 
-#Plot and seve the figures of the temperature and the velocity with arrows
+# Plot and save the figures of the temperature and the velocity with arrows
 temper_levels = np.arange(0, 2000, 10)
 me.save_velocity_2d(dataset, script_path, fil=4, temper_levels=temper_levels)
 
 
+# Plot and save the temperature data
+me.plot_data_2d(dataset.temperature, 'temperature',                  
+             script_path, temper_levels)
 
 
 
