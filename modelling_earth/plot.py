@@ -1,39 +1,74 @@
 import os
-import numpy as np
 import matplotlib.pyplot as plt
 
 
-def quiver_velocity_2d(dataset, time, fil=4, temper_levels=None):
+def plot_velocity_2d(dataset, ax, slice_grid=4, **kwargs):
     """
-    Plot a 2D velocity field of arrows over the temperature.
+    Plot a quiver velocity field on a profile
 
-    Parameter:
-    ---------
+    Parameters
+    ----------
     dataset : :class:`xarray.Dataset`
-        Array containing the velocity data.
-    time : float
-        Time to generate the plot.
-    fil : float
-        Use to filter the number of arrows to plot.
-    temper_levels : array
-        Array with the levels values to plot the temperature.
+        Dataset containing the velocity data. It must have only two dimensions given by
+        ``x`` and ``z`` coordinates and contain the components of the velocity for each
+        grid point given by ``velocity_x`` and ``velocity_z``
+        :class:`xarray.DataArray`s.
+    ax : :class:`matplotlib:Axes`
+        Axe where the plot will be added.
+    slice_grid : int, tuple or None (optional)
+        Slice the grid coordinates to reduce the number of arrows that will be plotted.
+        If ``slice_grid`` is 4, then only one array every four grid points will be
+        shown. The number of arrows can be specified by axes, passing ``slice_grid`` as
+        a tuple, where the first and second elements correspond to the number of arrows
+        on the ``x`` and ``z`` directions, respectively. Default to 4.
+    kwargs : dict
+        Keyword arguments passed to :meth:`matplotlib.Axes.quiver`.
     """
-    f = fil
-    # Extract the coordinate to grid
-    xx, zz = np.meshgrid(dataset.x.values, dataset.z.values)
-    # Plot the temperature
-    plot_args = {"x": "x", "y": "z"}
-    dataset.temperature.sel(time=time, y=0).plot.pcolormesh(
-        **plot_args, levels=temper_levels
-    )
+    # Slice the dataset
+    if slice_grid is not None:
+        if type(slice_grid) is int:
+            slice_x, slice_z = slice_grid, slice_grid
+        elif type(slice_grid) is tuple:
+            slice_x, slice_z = slice_grid[:]
+        else:
+            raise ValueError(
+                "Invalid arguement slice_grid '{}'."
+                + " Must be an integer or tuple of integers".format(slice_grid)
+            )
+        dataset = dataset[
+            dict(x=slice(None, None, slice_x), z=slice(None, None, slice_z))
+        ]
     # Plot the velocity
-    plt.quiver(
-        xx[::f, ::f],
-        zz[::f, ::f],
-        dataset.velocity_x.sel(time=time, y=0).values[::f, ::f].T,
-        dataset.velocity_z.sel(time=time, y=0).values[::f, ::f].T,
+    ax.quiver(
+        dataset.x,
+        dataset.z,
+        dataset.velocity_x.values.T,
+        dataset.velocity_z.values.T,
+        **kwargs
     )
-    plt.title("run/Time: %8.2f Ma" % time)
+
+
+def plot_scalar_2d(dataarray, ax, **kwargs):
+    """
+    Plot a pcolormesh of a scalar array on a profile
+
+    Parameters
+    ----------
+    dataarray : :class:`xarray.DataArray`
+        Array containing values of the scalar data. It must have only two dimensions
+        given by ``x`` and ``z`` coordinates.
+    ax : :class:`matplotlib:Axes`
+        Axe where the plot will be added.
+    kwargs : dict
+        Keyword arguments passed to :func:`xarray.plot.pcolormesh`.
+
+    Returns
+    -------
+    artist :
+        The same type of primitive artist that the :func:`matplotlib.Axes.pcolormesh`
+        function returns.
+    """
+    return dataarray.plot.pcolormesh(ax=ax, x="x", y="z", **kwargs)
 
 
 def save_velocity_2d(dataset, save_path, fil=4, temper_levels=None):
@@ -55,7 +90,7 @@ def save_velocity_2d(dataset, save_path, fil=4, temper_levels=None):
     for i in dataset.time:
         # Plot the velocity and the temperature
         plt.figure(figsize=(10 * 2, 2.5 * 2))
-        quiver_velocity_2d(dataset, time=i, fil=4, temper_levels=temper_levels)
+        plot_velocity_2d(dataset, time=i, fil=4, temper_levels=temper_levels)
         # Calculate the step to create the name of the plot
         k = dataset.step.values[dataset.time.values == i.values][0]
         plt.title("run/Time: %8.2f Ma" % i.values)
