@@ -5,7 +5,6 @@ created functions in the repository.
 import os
 import matplotlib.pyplot as plt
 import modelling_earth as me
-import numpy as np
 
 # Get path to the MD3D output directory
 script_path = os.path.dirname(os.path.abspath(__file__))
@@ -14,19 +13,19 @@ md3d_output_path = os.path.join(script_path, "run")
 # Read the MD3D output files
 dataset = me.read_md3d_data(md3d_output_path)
 
+# Filter the dataset for y=0
+dataset = dataset.sel(y=0)
+
+# Plot single frame (for t=0)
 fig, ax = plt.subplots()
-frame = {"time": 0, "y": 0}
-temperature_levels = np.arange(0, 2000, 10)
-me.plot_scalar_2d(dataset.temperature.sel(**frame), ax=ax, levels=temperature_levels)
-me.plot_velocity_2d(dataset.sel(**frame), ax=ax, slice_grid=(4, 3))
+me.plot_scalar_2d(dataset.temperature.sel(time=0), ax=ax)
+me.plot_velocity_2d(dataset.sel(time=0), ax=ax, slice_grid=(4, 3))
+ax.set_aspect("equal")
 plt.show()
 
 
-# Plot and save the figures of the temperature and the velocity with arrows
-# temper_levels = np.arange(0, 2000, 10)
-# me.save_velocity_2d(dataset, script_path, fil=4, temper_levels=temper_levels)
-
-
-# # Plot and save the temperature data
-# me.plot_data_2d(dataset.temperature, 'temperature',
-# script_path, temper_levels)
+# Plot all temperatures and velocities for every time and save the figures
+figs_dir = os.path.join(script_path, "figures")
+if not os.path.isdir(figs_dir):
+    os.mkdir(figs_dir)
+me.save_plots_2d(dataset, figs_dir, scalar_to_plot="temperature")

@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import matplotlib.pyplot as plt
 
 
@@ -44,7 +45,7 @@ def plot_velocity_2d(dataset, ax, slice_grid=4, **kwargs):
         dataset.z,
         dataset.velocity_x.values.T,
         dataset.velocity_z.values.T,
-        **kwargs
+        **kwargs,
     )
 
 
@@ -134,16 +135,46 @@ def plot_data_2d(dataset_data, data, save_path, data_levels):
 def save_plots_2d(
     dataset,
     save_path,
-    filenames_base,
-    scalar_to_plot="temperature",
+    filename="figure",
+    scalar_to_plot=None,
     plot_velocity=True,
     scalar_kwargs=None,
     velocity_kwargs=None,
+    figure_format="png",
+    dpi=300,
     show=False,
     **kwargs,
 ):
     """
     Save a profile plot for each time step of the dataset into a file
+
+    Parameters
+    ----------
+    dataset : :class:`xarray.Dataset`
+        Dataset containing values of scalar and/or velocity data. It must have only
+        three dimensions:``x``, ``z`` and ``time``.
+    save_path : str
+        Path to the directory where the figures will be saved.
+    filename : str (optional)
+        Base for the filename of the figures. Default to ``figure``.
+    scalar_to_plot : str or None
+        Name of the scalar dataset that will be plotted. If ``None``, no scalar will be
+        plotted. Default to ``None``.
+    plot_velocity : bool (optional)
+        If ``True`` the velocities will be plotted. Default ``True``.
+    scalar_kwargs : dict (optional)
+        Keyword arguments passed to :func:`modelling_earth.plot_scalar_2d`.
+    velocity_kwargs : dict (optional)
+        Keyword arguments passed to :func:`modelling_earth.plot_velocity_2d`.
+    figure_format : str (optional)
+        Image format. Default ``png``.
+    dpi : int (optional)
+        Dots per pixel for the saved image. Default 300.
+    show : bool (optional)
+        If ``True`` each figure will be shown after saved. Default ``False``.
+    kwargs : dict (optional)
+        Keyword arguments for :func:`matplotlib.pyplot.subplots` function.
+
     """
     if not os.path.isdir(save_path):
         raise OSError("Directory '{}' does not exist.".format(save_path))
@@ -151,15 +182,31 @@ def save_plots_2d(
         velocity_kwargs = {}
     if scalar_kwargs is None:
         scalar_kwargs = {}
+    # Get levels
+    if scalar_to_plot:
+        min_scalar = getattr(dataset, scalar_to_plot).min()
+        max_scalar = getattr(dataset, scalar_to_plot).max()
+        levels = np.linspace(min_scalar, max_scalar, 256)
+    # Get max number of digits on steps
+    number_of_digits = len(str(dataset.step.values.max()))
     # Generate figure
-    fig, ax = plt.subplots(**kwargs)
-    for time in dataset.time:
+    for step, time in zip(dataset.step, dataset.time):
+        fig, ax = plt.subplots(**kwargs)
         if scalar_to_plot:
-            plot_scalar_2d(getattr(dataset, scalar_to_plot), ax=ax, **scalar_kwargs)
+            plot_scalar_2d(
+                getattr(dataset.sel(time=time), scalar_to_plot),
+                ax=ax,
+                levels=levels,
+                **scalar_kwargs,
+            )
         if plot_velocity:
-            plot_velocity(dataset, ax=ax, **velocity_kwargs)
-        step = dataset.step.values[dataset.time.values == time.values][0]
-        filename = "{}_{}.png".fomat(filenames_base, str(step).zfill(5))
+            plot_velocity_2d(dataset.sel(time=time), ax=ax, **velocity_kwargs)
+        # Configure plot
+        ax.set_aspect("equal")
+        plt.tight_layout()
         # Save the plot
-        plt.savefig(os.path.join(save_path, filename))
-        fig.clear()
+        figure_name = "{}_{}.{}".format(
+            filename, str(step.values).zfill(number_of_digits), figure_format
+        )
+        plt.savefig(os.path.join(save_path, figure_name), dpi=dpi)
+        plt.clf()
