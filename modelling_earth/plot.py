@@ -62,5 +62,19 @@ def save_velocity_2d(dataset, save_path, fil=4, temper_levels=None):
     print('Velocity plot save in:', save_path)
 
 
-
+def plot_data_2d(dataset, data, save_path, data_level):
+    for i in dataset.time:
+        # Plot the data
+        plt.figure(figsize=(10 * 2, 2.5 * 2))
+        plot_args = {'x': 'x', 'y': 'z'}
+        dataset.data.sel(time=i,y=0).plot.pcolormesh(**plot_args, 
+                         levels=data_levels)
+        # Calculate the step to create the name of the plot
+        k = dataset.step.values[dataset.time.values == i.values][0]
+        plt.title('run/Time: %8.2f Ma'%i.values)
+        filename = data + str(k).zfill(5) +".png"
+        # Save the plot
+        plt.savefig(os.path.join(save_path, filename))
+        plt.close()
+    print(data, 'plot save in:', save_path)  
 
