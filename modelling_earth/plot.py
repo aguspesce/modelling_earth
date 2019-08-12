@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import xarray as xr
 import numpy as np
 
-def quiver_velocity_2d(dataset, time, fil=4, temerature_min,            
-                       temperature_max):
+def quiver_velocity_2d(dataset, time, fil=4, temper_min,            
+                       temper_max, temper_interval=10):
     '''
     Plot a 2D velocity field of arrows over the temperature. 
         
@@ -17,13 +17,19 @@ def quiver_velocity_2d(dataset, time, fil=4, temerature_min,
         Time to generate the plot.
     fil : float
         Use to filter the number of arrows to plot.
+    temper_min : float
+        Minimum temperature value to define the levels in the temperature plot.
+    temper_max :  float
+        Maximum temperature value to define the levels in the temperature plot.
+    temper_interval : float
+        Temperature interval to calculate the temperature level to plot
     '''
     f = fil
     # Extract the coordinate to grid
     xx, zz = np.meshgrid(dataset.x.values, dataset.z.values)
     # Plot the temperature
     plot_args = {'x': 'x', 'y': 'z'}
-    temper_nevels = np.arange(temperature_max, temperature_max,10)
+    temper_nevels = np.arange(temper_max, temper_max, temper_interval)
     dataset.temperature.sel(time=time,y=0).plot.pcolormesh(**plot_args, 
                             levels=temper_nevels)
     # Plot the velocity
@@ -33,7 +39,8 @@ def quiver_velocity_2d(dataset, time, fil=4, temerature_min,
     plt.title('run/Time: %8.2f Ma'%time)
 
 
-def save_velocity_2d(dataset, save_path, fil=4):
+def save_velocity_2d(dataset, save_path, fil=4, temper_min,            
+                     temper_max, temper_interval=10):
     '''
     Plot and save the 2D velocity field of arrows over the temperature field 
     for each time.     
@@ -45,6 +52,12 @@ def save_velocity_2d(dataset, save_path, fil=4):
         Path to the directory to save the plots.
     fil : float
         Use to filter the number of arrows to plot.
+    temper_min : float
+        Minimum temperature value to define the levels in the temperature plot.
+    temper_max : float
+        Maximum temperature value to define the levels in the temperature plot.
+    temper_interval : float
+        Temperature interval to calculate the temperature level to plot    
     '''
     for i in dataset.time:
         # Plot the velocuty and the themperature
