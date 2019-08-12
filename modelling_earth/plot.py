@@ -129,3 +129,37 @@ def plot_data_2d(dataset_data, data, save_path, data_levels):
         plt.savefig(os.path.join(save_path, filename))
         plt.close()
     print(data, "plot save in:", save_path)
+
+
+def save_plots_2d(
+    dataset,
+    save_path,
+    filenames_base,
+    scalar_to_plot="temperature",
+    plot_velocity=True,
+    scalar_kwargs=None,
+    velocity_kwargs=None,
+    show=False,
+    **kwargs,
+):
+    """
+    Save a profile plot for each time step of the dataset into a file
+    """
+    if not os.path.isdir(save_path):
+        raise OSError("Directory '{}' does not exist.".format(save_path))
+    if velocity_kwargs is None:
+        velocity_kwargs = {}
+    if scalar_kwargs is None:
+        scalar_kwargs = {}
+    # Generate figure
+    fig, ax = plt.subplots(**kwargs)
+    for time in dataset.time:
+        if scalar_to_plot:
+            plot_scalar_2d(getattr(dataset, scalar_to_plot), ax=ax, **scalar_kwargs)
+        if plot_velocity:
+            plot_velocity(dataset, ax=ax, **velocity_kwargs)
+        step = dataset.step.values[dataset.time.values == time.values][0]
+        filename = "{}_{}.png".fomat(filenames_base, str(step).zfill(5))
+        # Save the plot
+        plt.savefig(os.path.join(save_path, filename))
+        fig.clear()
