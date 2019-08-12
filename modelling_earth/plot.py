@@ -11,7 +11,6 @@ def quiver_velocity_2d(dataset, time, fil=4, temper_levels=None):
     ---------
     dataset : :class:`xarray.Dataset`
         Array containing the velocity data.
-    all_time :
     time : float
         Time to generate the plot.
     fil : float
@@ -41,8 +40,9 @@ def save_velocity_2d(dataset, save_path, fil=4, temper_levels=None):
     """
     Plot and save the 2D velocity field of arrows over the temperature field
     for each time.
-    Parameter:
-    ---------
+
+    Parameters
+    ----------
     dataset : :class:`xarray.Dataset`
         Array containing the velocity data.
     save_path : str
@@ -68,8 +68,10 @@ def save_velocity_2d(dataset, save_path, fil=4, temper_levels=None):
 
 def plot_data_2d(dataset_data, data, save_path, data_levels):
     """
-    Plot and save the 2D data for each time.                                                Parameter:
-    ---------
+    Plot and save the 2D data for each time.
+
+    Parameters
+    ----------
     dataset_data : :class:`xarray.Dataset`
         Array containing the data to plot.
     data : str
