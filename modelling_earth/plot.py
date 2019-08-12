@@ -1,7 +1,6 @@
 import os
-import matplotlib.pyplot as plt
-import xarray as xr
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def quiver_velocity_2d(dataset, time, fil=4, temper_levels=None):
