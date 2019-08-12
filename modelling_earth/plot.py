@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import xarray as xr
 import numpy as np
 
-def quiver_velocity_2d(dataset, time, fil=4):
+def quiver_velocity_2d(dataset, time, fil=4, temerature_min,            
+                       temperature_max):
     '''
     Plot a 2D velocity field of arrows over the temperature. 
         
@@ -22,7 +23,9 @@ def quiver_velocity_2d(dataset, time, fil=4):
     xx, zz = np.meshgrid(dataset.x.values, dataset.z.values)
     # Plot the temperature
     plot_args = {'x': 'x', 'y': 'z'}
-    dataset.temperature.sel(time=time,y=0).plot.pcolormesh(**plot_args)
+    temper_nevels = np.arange(temperature_max, temperature_max,10)
+    dataset.temperature.sel(time=time,y=0).plot.pcolormesh(**plot_args, 
+                            levels=temper_nevels)
     # Plot the velocity
     plt.quiver(xx[::f, ::f], zz[::f, ::f],
                dataset.velocity_x.sel(time=time, y=0).values[::f, ::f].T,
@@ -57,4 +60,3 @@ def save_velocity_2d(dataset, save_path, fil=4):
     print('Velocity plot save in:', save_path)
 
 
-             
