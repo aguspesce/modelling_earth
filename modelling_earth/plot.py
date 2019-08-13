@@ -209,4 +209,6 @@ def save_plots_2d(
             filename, str(step.values).zfill(number_of_digits), figure_format
         )
         plt.savefig(os.path.join(save_path, figure_name), dpi=dpi)
+        if show:
+            plt.show()
         plt.clf()
