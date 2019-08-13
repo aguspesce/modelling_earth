@@ -24,7 +24,7 @@ ax.set_aspect("equal")
 plt.show()
 
 # Plot all temperatures and velocities for every time and save the figures
-figs_dir = os.path.join(script_path, "figures")
+figs_dir = os.path.join(script_path, "_figures")
 if not os.path.isdir(figs_dir):
     os.mkdir(figs_dir)
 me.save_plots_2d(dataset.sel(**filter_profile), figs_dir, scalar_to_plot="temperature")
