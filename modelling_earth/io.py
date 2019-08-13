@@ -283,7 +283,6 @@ def read_swarm(path):
     """
     # Define variable and parameters
     list_position = []
-    x = []
     parameters = _read_parameters(path)
     print_step = parameters["print_step"]
     max_steps = parameters["stepMAX"]
@@ -299,8 +298,8 @@ def read_swarm(path):
             filename = "step_{}-rank{}.txt".format(step, rank_i)
             if not os.path.isfile(os.path.join(path, filename)):
                 break
-            x1, y1, z1, c0, c1, c2, c3, c4 = np.loadtxt(
-                os.path.join(path, filename), unpack=True)
+            x1, y1, z1, c0 = np.loadtxt(os.path.join(path, filename), 
+                                        unpack=True, usecols=(0, 1, 2, 3))
             # Stack arrays in sequence horizontally 
             cc0 =  np.hstack((cc0, c0))
             x =  np.hstack((x, x1))
