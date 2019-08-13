@@ -23,10 +23,11 @@ def swarm_read(path, rank=4):
     """
     x, y, z, cc, cc0 = [], [], [], [], []
     list_frame = []
-    step = _read_parameters(path)["print_step"]
-    max_steps = _read_parameters(path)["stepMAX"]
+    parameters = _read_parameters(path)
+    print_step = parameters["print_step"]
+    max_steps = parameters["stepMAX"]
     # Red the data
-    for i in range(0, max_steps + step, step):
+    for step in range(0, max_steps + print_step, print_step):
         # Read data
         for rank in range(rank):
             filename = "step_{}-rank{}.txt".format(step, rank)
