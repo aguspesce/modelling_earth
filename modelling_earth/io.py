@@ -301,8 +301,6 @@ def read_swarm(path):
         for rank_i in range(n_rank):
             print('rank_i',rank_i)
             filename = "step_{}-rank{}.txt".format(step_i, rank_i)
-            #if not os.path.isfile(os.path.join(path, filename)):
-                #break
             x1, y1, z1, c0 = np.loadtxt(os.path.join(path, filename), 
                                         unpack=True, usecols=(0, 1, 2, 3))
             # Stack arrays in sequence horizontally 
