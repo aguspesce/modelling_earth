@@ -279,7 +279,7 @@ def read_swarm(path):
     -------
     list_position : list
         List of `pandas.DataFrame` which contains the coordinate `x`, `y` and 
-       `z` and the flag `c_0` for each time step.
+       `z` and the flag `cc0` for each time step.
     """
     # Define variable and parameters
     list_position = []
@@ -287,7 +287,6 @@ def read_swarm(path):
     parameters = _read_parameters(path)
     print_step = parameters["print_step"]
     max_steps = parameters["stepMAX"]
-    #max_steps = 50
     # Red the data    
     for step in range(0, max_steps + print_step, print_step):
         print(step)
@@ -300,8 +299,7 @@ def read_swarm(path):
         for rank_i in range(n_rank):
             filename = "step_{}-rank{}.txt".format(step, rank_i)
             x1, y1, z1, c0, c1, c2, c3, c4 = np.loadtxt(
-                os.path.join(path, filename), unpack=True
-            )
+                os.path.join(path, filename), unpack=True)
             # Stack arrays in sequence horizontally 
             cc0 =  np.hstack((cc0, c0))
             x =  np.hstack((x, x1))
@@ -310,6 +308,8 @@ def read_swarm(path):
             # Create a data frame
             data = {'x': x, 'y': y, 'z': z, 'cc0': cc0}
             frame = pd.DataFrame(data=data)
+            if not os.path.isfile(filename):
+                break
         # Create a list with the frame
         list_position.append(frame)
     return list_position
