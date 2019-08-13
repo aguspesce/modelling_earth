@@ -4,8 +4,7 @@ from ._version import get_versions
 from .temperature import (
     add_subducting_slab, empty_temperature_grid, litho_astheno_temperatures,
 )
-from .io import read_md3d_data
-from .swarms import swarm_read
+from .io import read_md3d_data, read_swarm
 
 # Get the version number through versioneer
 __version__ = get_versions()['version']
