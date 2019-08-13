@@ -20,6 +20,7 @@ filter_profile = {"y": 0}
 fig, ax = plt.subplots()
 me.plot_scalar_2d(dataset.temperature.sel(time=0, **filter_profile), ax=ax)
 me.plot_velocity_2d(dataset.sel(time=0, **filter_profile), ax=ax, slice_grid=(4, 3))
+ax.ticklabel_format(axis='both', style='sci', scilimits=(0, 0))
 ax.set_aspect("equal")
 plt.show()
 

@@ -203,6 +203,7 @@ def save_plots_2d(
             plot_velocity_2d(dataset.sel(time=time), ax=ax, **velocity_kwargs)
         # Configure plot
         ax.set_aspect("equal")
+        ax.ticklabel_format(axis='both', style='sci', scilimits=(0, 0))
         plt.tight_layout()
         # Save the plot
         figure_name = "{}_{}.{}".format(
