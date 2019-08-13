@@ -43,7 +43,7 @@ def read_swarm(path, rank=4):
             xx = x[cc0 % 10 == 0]
             yy = y[cc0 % 10 == 0]
             zz = z[cc0 % 10 == 0]
-            # Create a data frame |
+            # Create a data frame 
             data = {"x": xx, "y": yy, "z": zz}
             frame = pd.DataFrame(data=data)
         # Create a list with the frame
