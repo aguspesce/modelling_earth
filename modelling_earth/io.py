@@ -289,12 +289,14 @@ def read_swarm(path, rank=4):
     print_step = parameters["print_step"]
     max_steps = parameters["stepMAX"]
     #max_steps = 50
-    # Red the data 
+    # Red the data    
     for step in range(0, max_steps + print_step, print_step):
         print(step)
+        step_files = [i for i in os.listdir(path) if  
+                      "step_{}-".format(step) in i]
+        n_rank = len(step_files)
         x, y, z, cc0 = np.array([]), np.array([]), np.array([]), np.array([])
-        for rank_i in range(rank):
-            print(rank_i)
+        for rank_i in range(n_rank):
             filename = "step_{}-rank{}.txt".format(step, rank_i)
             x1, y1, z1, c0, c1, c2, c3, c4 = np.loadtxt(
                 os.path.join(path, filename), unpack=True
