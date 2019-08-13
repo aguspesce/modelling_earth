@@ -4,7 +4,7 @@ import os
 from .io import _read_parameters
 
 
-def swarm_read(path, rank=4):
+def read_swarm(path, rank=4):
     """
     Create a list of dataframe with the position of the particle.
     
