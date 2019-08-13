@@ -289,7 +289,6 @@ def read_swarm(path):
     max_steps = parameters["stepMAX"]
     # Red the data    
     for step in range(0, max_steps + print_step, print_step):
-        print(step)
         # Determine the rank value
         step_files = [i for i in os.listdir(path) if  
                       "step_{}-".format(step) in i]
@@ -298,6 +297,8 @@ def read_swarm(path):
         x, y, z, cc0 = np.array([]), np.array([]), np.array([]), np.array([])
         for rank_i in range(n_rank):
             filename = "step_{}-rank{}.txt".format(step, rank_i)
+            if not os.path.isfile(os.path.join(path, filename)):
+                break
             x1, y1, z1, c0, c1, c2, c3, c4 = np.loadtxt(
                 os.path.join(path, filename), unpack=True)
             # Stack arrays in sequence horizontally 
@@ -308,8 +309,6 @@ def read_swarm(path):
             # Create a data frame
             data = {'x': x, 'y': y, 'z': z, 'cc0': cc0}
             frame = pd.DataFrame(data=data)
-            if not os.path.isfile(filename):
-                break
         # Create a list with the frame
         list_position.append(frame)
     return list_position
