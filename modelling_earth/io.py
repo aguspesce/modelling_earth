@@ -266,7 +266,7 @@ def _read_velocity(path, shape, steps):
     return (velocity_x, velocity_y, velocity_z)
 
 
-def read_swarm(path, rank=4):
+def read_swarm(path):
     """
     Create a list of dataframe with the position of the particle.
     
@@ -274,8 +274,7 @@ def read_swarm(path, rank=4):
     -----------
     path : str
         Path to the folder where the MD3D program output files are located.
-    rank : float
-        Number of processors used in the simulation.
+    
     Returns: 
     -------
     list_position : list
@@ -292,21 +291,24 @@ def read_swarm(path, rank=4):
     # Red the data    
     for step in range(0, max_steps + print_step, print_step):
         print(step)
+        # Determine the rank value
         step_files = [i for i in os.listdir(path) if  
                       "step_{}-".format(step) in i]
         n_rank = len(step_files)
+        # Create the array to save the data
         x, y, z, cc0 = np.array([]), np.array([]), np.array([]), np.array([])
         for rank_i in range(n_rank):
             filename = "step_{}-rank{}.txt".format(step, rank_i)
             x1, y1, z1, c0, c1, c2, c3, c4 = np.loadtxt(
                 os.path.join(path, filename), unpack=True
             )
+            # Stack arrays in sequence horizontally 
             cc0 =  np.hstack((cc0, c0))
             x =  np.hstack((x, x1))
             y =  np.hstack((y, y1))
             z =  np.hstack((z, z1))
             # Create a data frame
-            data = {'x': x, 'y': y, 'z': z}
+            data = {'x': x, 'y': y, 'z': z, 'cc0': cc0}
             frame = pd.DataFrame(data=data)
         # Create a list with the frame
         list_position.append(frame)
