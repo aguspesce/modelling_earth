@@ -289,9 +289,7 @@ def read_swarm(path):
     # Determine the number of time steps
     steps, time = _read_times(path, print_step, max_steps)
     # Read the data    
-    print(steps.max())
     for step_i in range(0, steps.max() + print_step, print_step):
-        print('step_i', step_i)
         # Determine the rank value
         step_files = [i for i in os.listdir(path) if  
                       "step_{}-".format(step_i) in i]
@@ -299,7 +297,6 @@ def read_swarm(path):
         # Create the array to save the data
         x, y, z, cc0 = np.array([]), np.array([]), np.array([]), np.array([])
         for rank_i in range(n_rank):
-            print('rank_i',rank_i)
             filename = "step_{}-rank{}.txt".format(step_i, rank_i)
             x1, y1, z1, c0 = np.loadtxt(os.path.join(path, filename), 
                                         unpack=True, usecols=(0, 1, 2, 3))
