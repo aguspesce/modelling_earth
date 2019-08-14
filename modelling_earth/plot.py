@@ -122,11 +122,10 @@ def save_plots_2d(
         velocity_kwargs = {}
     if scalar_kwargs is None:
         scalar_kwargs = {}
-    # Get levels
+    # Get maximum and minimum values of the scalar for the entire time
     if scalar_to_plot:
-        min_scalar = getattr(dataset, scalar_to_plot).min()
-        max_scalar = getattr(dataset, scalar_to_plot).max()
-        levels = np.linspace(min_scalar, max_scalar, 256)
+        vmin = getattr(dataset, scalar_to_plot).min()
+        vmax = getattr(dataset, scalar_to_plot).max()
     # Get max number of digits on steps
     number_of_digits = len(str(dataset.step.values.max()))
     # Generate figure
@@ -136,7 +135,8 @@ def save_plots_2d(
             plot_scalar_2d(
                 getattr(dataset.sel(time=time), scalar_to_plot),
                 ax=ax,
-                levels=levels,
+                vmin=vmin,
+                vmax=vmax,
                 **scalar_kwargs,
             )
         if plot_velocity:
