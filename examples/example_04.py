@@ -4,7 +4,6 @@ Read MD3D output files and plot temperature and position of the particle.
 
 import os
 import numpy as np
-import xarray as xr
 import modelling_earth as me
 import matplotlib.pyplot as plt
 
