@@ -21,14 +21,9 @@ frame_0 = list_frame[0]
 data = me.read_md3d_data(md3d_output_path)
 
 # Plot the particle position over the temperature for step=0
-plt.figure(figsize=(10 * 2, 2.5 * 2))
-plot_args = {"x": "x", "y": "z"}
-data.temperature.sel(time=0, y=0).plot.pcolormesh(**plot_args)
-plt.plot(
-    frame_0.x[frame_0.cc0 % 10 == 0],
-    frame_0.z[frame_0.cc0 % 10 == 0],
-    "c.",
-    color="black",
-    markersize=0.3,
-)  # With [frame_0.cc0%10==0] filter the number of particles to plot
+fig, ax = plt.subplots()
+me.plot_scalar_2d(data.temperature.sel(time=0, y=0), ax=ax)
+# With [frame_0.cc0%10==0] filter the number of particles to plot
+plt.plot(frame_0.x[frame_0.cc0 % 10 == 0], frame_0.z[frame_0.cc0 % 10 == 0],
+         "c.", color="black", markersize=0.3,) 
 plt.show()
