@@ -128,6 +128,8 @@ def save_plots_2d(
         vmax = getattr(dataset, scalar_to_plot).max()
     # Get max number of digits on steps
     number_of_digits = len(str(dataset.step.values.max()))
+    # Initialize quiver to None
+    quiver = None
     # Generate figure
     for step, time in zip(dataset.step, dataset.time):
         fig, ax = plt.subplots(**kwargs)
@@ -140,10 +142,16 @@ def save_plots_2d(
                 **scalar_kwargs,
             )
         if plot_velocity:
-            plot_velocity_2d(dataset.sel(time=time), ax=ax, **velocity_kwargs)
+            if quiver is None:
+                scale = None
+            else:
+                scale = quiver.scale
+            quiver = plot_velocity_2d(
+                dataset.sel(time=time), ax=ax, scale=scale, **velocity_kwargs
+            )
         # Configure plot
         ax.set_aspect("equal")
-        ax.ticklabel_format(axis='both', style='sci', scilimits=(0, 0))
+        ax.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
         plt.tight_layout()
         # Save the plot
         figure_name = "{}_{}.{}".format(
