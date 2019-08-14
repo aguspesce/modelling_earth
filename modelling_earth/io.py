@@ -1,7 +1,6 @@
 import os
 import numpy as np
 import xarray as xr
-import pandas as pd
 
 PARAMETERS_FILE = "param_1.5.3.txt"
 SCALARS = {
