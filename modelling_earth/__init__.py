@@ -6,7 +6,7 @@ from .temperature import (
     empty_temperature_grid,
     litho_astheno_temperatures,
 )
-from .io import read_md3d_data
+from .io import read_md3d_data, read_swarm
 from .plot import (
     plot_velocity_2d,
     plot_scalar_2d,
