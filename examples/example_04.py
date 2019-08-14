@@ -21,8 +21,8 @@ data = me.read_md3d_data(md3d_output_path)
 # Plot the particle position over the temperature for step=0
 fig, ax = plt.subplots()
 me.plot_scalar_2d(data.temperature.sel(time=time_0, y=0), ax=ax)
-# With [frame_0.cc0%10==0] filter the number of particles to plot
-plt.plot(position_0.x[position_0.cc0 % 10 == 0], 
-         position_0.z[position_0.cc0 % 10 == 0],
-         "c.", color="black", markersize=0.3,) 
+# Filter the number of particles to plot
+fewer_particles = position_0.sample(2500, random_state=0)
+ax.scatter(fewer_particles.x, fewer_particles.z, c='black', s=0.3)
 plt.show()
+
