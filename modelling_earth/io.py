@@ -277,12 +277,15 @@ def read_swarm(path):
     
     Returns: 
     -------
-    list_position : list
-        List of `pandas.DataFrame` which contains the coordinate `x`, `y` and 
-       `z` and the flag `cc0` for each time step.
+    particle_position : list
+        List of `pandas.DataFrame` which contains the coordinate `x`, 
+        `y` and `z` and the flag `cc0` for each time step.
+    time : numpy array
+        Array containing the time of each step in Ma linked to the index 
+       of the `particle_position` list.
     """
     # Define variable and parameters
-    list_position = []
+    particle_position = []
     parameters = _read_parameters(path)
     print_step = parameters["print_step"]
     max_steps = parameters["stepMAX"]
@@ -309,5 +312,5 @@ def read_swarm(path):
             data = {'x': x, 'y': y, 'z': z, 'cc0': cc0}
             frame = pd.DataFrame(data=data)
         # Create a list with the frame
-        list_position.append(frame)
-    return list_position
+        particle_position.append(frame)
+    return particle_position, time
