@@ -268,7 +268,7 @@ def _read_velocity(path, shape, steps):
 
 def read_swarm(path):
     """
-    Create a list of dataframe with the position of the particle.
+    Read swarm files and return a list with the positions of the particles
     
     Parameters: 
     -----------
