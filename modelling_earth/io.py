@@ -297,7 +297,7 @@ def read_swarm(path):
         step_files = [i for i in os.listdir(path) if  
                       "step_{}-".format(step_i) in i]
         n_rank = len(step_files)
-        # Create the array to save the data
+        # Initialize the arrays to store the data for each step
         x, y, z, cc0 = np.array([]), np.array([]), np.array([]), np.array([])
         for rank_i in range(n_rank):
             filename = "step_{}-rank{}.txt".format(step_i, rank_i)
