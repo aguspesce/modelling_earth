@@ -269,19 +269,19 @@ def _read_velocity(path, shape, steps):
 def read_swarm(path):
     """
     Read swarm files and return a list with the positions of the particles
-    
-    Parameters: 
+
+    Parameters:
     -----------
     path : str
         Path to the folder where the MD3D program output files are located.
-    
-    Returns: 
+
+    Returns:
     -------
     particle_position : list
-        List of `pandas.DataFrame` which contains the coordinate `x`, 
+        List of `pandas.DataFrame` which contains the coordinate `x`,
         `y` and `z` and the flag `cc0` for each time step.
     time : numpy array
-        Array containing the time of each step in Ma linked to the index 
+        Array containing the time of each step in Ma linked to the index
        of the `particle_position` list.
     """
     # Define variable and parameters
@@ -291,25 +291,25 @@ def read_swarm(path):
     max_steps = parameters["stepMAX"]
     # Determine the number of time steps
     steps, time = _read_times(path, print_step, max_steps)
-    # Read the data    
+    # Read the data
     for step_i in range(0, steps.max() + print_step, print_step):
         # Determine the rank value
-        step_files = [i for i in os.listdir(path) if  
-                      "step_{}-".format(step_i) in i]
+        step_files = [i for i in os.listdir(path) if "step_{}-".format(step_i) in i]
         n_rank = len(step_files)
         # Initialize the arrays to store the data for each step
         x, y, z, cc0 = np.array([]), np.array([]), np.array([]), np.array([])
         for rank_i in range(n_rank):
             filename = "step_{}-rank{}.txt".format(step_i, rank_i)
-            x1, y1, z1, c0 = np.loadtxt(os.path.join(path, filename), 
-                                        unpack=True, usecols=(0, 1, 2, 3))
-            # Stack arrays in sequence horizontally 
-            cc0 =  np.hstack((cc0, c0))
-            x =  np.hstack((x, x1))
-            y =  np.hstack((y, y1))
-            z =  np.hstack((z, z1))
+            x1, y1, z1, c0 = np.loadtxt(
+                os.path.join(path, filename), unpack=True, usecols=(0, 1, 2, 3)
+            )
+            # Stack arrays in sequence horizontally
+            cc0 = np.hstack((cc0, c0))
+            x = np.hstack((x, x1))
+            y = np.hstack((y, y1))
+            z = np.hstack((z, z1))
             # Create a data frame
-            data = {'x': x, 'y': y, 'z': z, 'cc0': cc0}
+            data = {"x": x, "y": y, "z": z, "cc0": cc0}
             frame = pd.DataFrame(data=data)
         # Create a list with the frame
         particle_position.append(frame)

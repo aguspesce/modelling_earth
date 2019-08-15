@@ -162,4 +162,4 @@ def save_plots_2d(
             plt.show()
         plt.clf()
     print("All figures have been succesfully saved on {}".format(save_path))
-    plt.close('all')
+    plt.close("all")
