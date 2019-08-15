@@ -7,6 +7,7 @@ dependencies:
     - numpy
     - scipy
     - xarray
+    - pandas
     # Optional dependencies
     - matplotlib
     - jupyter
