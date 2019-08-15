@@ -14,3 +14,7 @@ dependencies:
     - jupyterlab
     - jupytext
     - ipython
+    # Development requirements
+    - black
+    - pylint
+    - flake8
