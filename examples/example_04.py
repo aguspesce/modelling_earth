@@ -25,4 +25,3 @@ me.plot_scalar_2d(data.temperature.sel(time=time_0, y=0), ax=ax)
 fewer_particles = position_0.sample(2500, random_state=0)
 ax.scatter(fewer_particles.x, fewer_particles.z, c='black', s=0.3)
 plt.show()
-
