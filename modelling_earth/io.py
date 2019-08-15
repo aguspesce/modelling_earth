@@ -273,13 +273,13 @@ def read_swarm(path):
     Parameters:
     -----------
     path : str
-        Path to the folder where the MD3D program output files are located.
+        Path to the folder where the MD3D output files are located.
 
     Returns:
     -------
     particle_position : list
-        List of `pandas.DataFrame` which contains the coordinate `x`,
-        `y` and `z` and the flag `cc0` for each time step.
+        List of `pandas.DataFrame`s that contains the coordinates `x`, `y`, `z` and the
+        `cc0` flag for each time step.
     time : numpy array
         Array containing the time of each step in Ma linked to the index
        of the `particle_position` list.
@@ -291,11 +291,21 @@ def read_swarm(path):
     max_steps = parameters["stepMAX"]
     # Determine the number of time steps
     steps, time = _read_times(path, print_step, max_steps)
+    # Get swarm files
+    swarm_files = [i for i in os.listdir(path) if "step_" in i]
     # Read the data
     for step_i in range(0, steps.max() + print_step, print_step):
-        # Determine the rank value
-        step_files = [i for i in os.listdir(path) if "step_{}-".format(step_i) in i]
-        n_rank = len(step_files)
+        # Determine the rank value on the first step and check it for following steps
+        step_files = [i for i in swarm_files if "step_{}-".format(step_i) in i]
+        if step_i == 0:
+            n_rank = len(step_files)
+        else:
+            if len(step_files) != n_rank:
+                raise ValueError(
+                    "Invalid number of ranks '{}' for step '{}'".format(
+                        len(step_files), step_i
+                    )
+                )
         # Initialize the arrays to store the data for each step
         x, y, z, cc0 = np.array([]), np.array([]), np.array([]), np.array([])
         for rank_i in range(n_rank):
