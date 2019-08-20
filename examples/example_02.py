@@ -8,7 +8,7 @@ import modelling_earth as me
 
 # Get path to the MD3D output directory
 script_path = os.path.dirname(os.path.abspath(__file__))
-md3d_output_path = os.path.join(script_path, 'run')
+md3d_output_path = os.path.join(script_path, "run")
 
 # Read the MD3D output files
 data = me.read_md3d_data(md3d_output_path)
@@ -24,6 +24,6 @@ ax.quiver(
     data.x,
     data.z,
     data.velocity_x.sel(time=0, y=0).T,
-    data.velocity_z.sel(time=0, y=0).T
+    data.velocity_z.sel(time=0, y=0).T,
 )
 plt.show()
