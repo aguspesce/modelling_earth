@@ -35,7 +35,7 @@ def read_md3d_data(path):
             - Density [kg/m^3]
             - Radiogenic heat [W/m^3]
             - Viscosity factor
-            - Strain
+            - Strain rate [1/s]
     """
     # Read parameters
     parameters = _read_parameters(path)
@@ -117,11 +117,11 @@ def _read_parameters(path):
     # Add units
     parameters["coords_units"] = "m"
     parameters["times_units"] = "Ma"
-    parameters["temperature_units"] = "K"
+    parameters["temperature_units"] = "C"
     parameters["density_units"] = "kg/m^3"
     parameters["heat_units"] = "W/m^3"
     parameters["viscosity_factor_units"] = "dimensionless"
-    parameters["strain_units"] = "dimensionless"
+    parameters["strain_rate_units"] = "s^(-1)"
     return parameters
 
 
@@ -298,17 +298,28 @@ def read_swarm(path, save=False, save_path=None):
     steps, time = _read_times(path, print_step, max_steps)
     # Get max number of digits on steps
     number_of_digits = len(str(steps.max()))
+    # Get swarm files
+    swarm_files = [i for i in os.listdir(path) if "step_" in i]
     # Read the data
     for step_i in range(0, steps.max() + print_step, print_step):
-        # Determine the rank value
-        step_files = [i for i in os.listdir(path) if "step_{}-".format(step_i) in i]
-        n_rank = len(step_files)
+        # Determine the rank value on the first step and check it for following steps
+        step_files = [i for i in swarm_files if "step_{}-".format(step_i) in i]
+        if step_i == 0:
+            n_rank = len(step_files)
+        else:
+            if len(step_files) != n_rank:
+                raise ValueError(
+                    "Invalid number of ranks '{}' for step '{}'".format(
+                        len(step_files), step_i
+                    )
+                )
         # Initialize the arrays to store the data for each step
         x, y, z, cc0 = np.array([]), np.array([]), np.array([]), np.array([])
         for rank_i in range(n_rank):
             filename = "step_{}-rank{}.txt".format(step_i, rank_i)
-            x1, y1, z1, c0 = np.loadtxt(os.path.join(path, filename), unpack=True, 
-                                        usecols=(0, 1, 2, 3))
+            x1, y1, z1, c0 = np.loadtxt(
+                os.path.join(path, filename), unpack=True, usecols=(0, 1, 2, 3)
+            )
             # Stack arrays in sequence horizontally
             cc0 = np.hstack((cc0, c0))
             x = np.hstack((x, x1))

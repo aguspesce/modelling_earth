@@ -14,6 +14,7 @@ The package needs the following dependencies to run:
 - numpy
 - scipy
 - xarray
+- pandas
 
 Besides, some examples need `matplotlib` to be installed.
 
@@ -32,15 +33,8 @@ conda activate modelling_earth
 
 ### Installing
 
-We can install the package through pip:
+We can install the package through pip by using the `Makefile`:
 
 ```
-pip install .
-```
-
-If you are a developer and want to modify the code, we recommend you to install it on
-developer mode:
-
-```
-pip install -e .
+make install
 ```

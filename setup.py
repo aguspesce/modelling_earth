@@ -41,6 +41,7 @@ INSTALL_REQUIRES = [
     "numpy",
     "scipy",
     "xarray",
+    "pandas",
 ]
 PYTHON_REQUIRES = ">=3.6"
 

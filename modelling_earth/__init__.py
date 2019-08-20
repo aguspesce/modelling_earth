@@ -7,11 +7,7 @@ from .temperature import (
     litho_astheno_temperatures,
 )
 from .io import read_md3d_data, read_swarm
-from .plot import (
-    plot_velocity_2d,
-    plot_scalar_2d,
-    save_plots_2d,
-)
+from .plot import plot_velocity_2d, plot_scalar_2d, save_plots_2d
 
 
 # Get the version number through versioneer

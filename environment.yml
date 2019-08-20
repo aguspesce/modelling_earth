@@ -7,11 +7,16 @@ dependencies:
     - numpy
     - scipy
     - xarray
+    - pandas
     # Optional dependencies
     - matplotlib
     - jupyter
     - jupyterlab
     - jupytext
-    - ipython
+    - ipytho
     - pip:
         - tables
+    # Development requirements
+    - black
+    - pylint
+    - flake8
