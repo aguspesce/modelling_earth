@@ -269,7 +269,7 @@ def _read_velocity(path, shape, steps):
 def read_swarm(path, save=False, save_path=None):
     """
     Read swarm files and return a list with the positions of the particles
-    
+
     Parameters:
     -----------
     path : str
@@ -279,14 +279,14 @@ def read_swarm(path, save=False, save_path=None):
         step. Default ``False``.
     save_path : str or None
         Path to the folder to save the particle position. Default to ``None``.
-        
+
     Returns:
     -------
     particle_position : list
-        List of `pandas.DataFrame` which contains the coordinate `x`, `y` and `z` (in 
+        List of `pandas.DataFrame` which contains the coordinate `x`, `y` and `z` (in
         meters) and the flag `cc0` for each time step.
     time : numpy array
-        Array containing the time of each step in Ma linked to the index of the 
+        Array containing the time of each step in Ma linked to the index of the
         `particle_position` list.
     """
     # Define variable and parameters
@@ -326,15 +326,17 @@ def read_swarm(path, save=False, save_path=None):
             y = np.hstack((y, y1))
             z = np.hstack((z, z1))
             # Create a data frame
-            data = {'x': x, 'y': y, 'z': z, 'cc0': cc0}
+            data = {"x": x, "y": y, "z": z, "cc0": cc0}
             frame = pd.DataFrame(data=data)
         # Create a list with the frame
         particle_position.append(frame)
         # Save data frame for each time step
-        if (save == True):
+        if save:
             filename = "particle_position_{}.h5".format(
-                str(step_i).zfill(number_of_digits))
-            frame.to_hdf(os.path.join(save_path, filename), key='pd', mode='w', 
-                         format='fixed')
-    print('All particle positions have been successfully saved on{}'.format(save_path))
+                str(step_i).zfill(number_of_digits)
+            )
+            frame.to_hdf(
+                os.path.join(save_path, filename), key="pd", mode="w", format="fixed"
+            )
+    print("All particle positions have been successfully saved on{}".format(save_path))
     return particle_position, time
