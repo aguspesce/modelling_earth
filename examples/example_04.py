@@ -8,8 +8,10 @@ import matplotlib.pyplot as plt
 # Get path to the MD3D output directory
 script_path = os.path.dirname(os.path.abspath(__file__))
 md3d_output_path = os.path.join(script_path, "run")
+output_path = os.path.join(script_path, 'output')
 
-# Read the particles
+# Read and save the particles position
+position, time = me.read_swarm(path=md3d_output_path, save=True, save_path=output_path)
 position, time = me.read_swarm(md3d_output_path)
 # Take the particle position for time=0 linked to index 0
 position_0 = position[0]
