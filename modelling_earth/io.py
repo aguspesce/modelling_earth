@@ -269,7 +269,7 @@ def _read_velocity(path, shape, steps):
 def read_swarm(path, save=False, save_path=None):
     """
     Read swarm files and return a list with the positions of the particles
-    
+
     Parameters:
     -----------
     path : str
@@ -279,14 +279,14 @@ def read_swarm(path, save=False, save_path=None):
         step. Default ``False``.
     save_path : str or None
         Path to the folder to save the particle position. Default to ``None``.
-        
+
     Returns:
     -------
     particle_position : list
-        List of `pandas.DataFrame` which contains the coordinate `x`, `y` and `z` (in 
+        List of `pandas.DataFrame` which contains the coordinate `x`, `y` and `z` (in
         meters) and the flag `cc0` for each time step.
     time : numpy array
-        Array containing the time of each step in Ma linked to the index of the 
+        Array containing the time of each step in Ma linked to the index of the
         `particle_position` list.
     """
     # Define variable and parameters
@@ -331,7 +331,7 @@ def read_swarm(path, save=False, save_path=None):
         # Create a list with the frame
         particle_position.append(frame)
         # Save data frame for each time step
-        if save == True:
+        if save:
             filename = "particle_position_{}.h5".format(
                 str(step_i).zfill(number_of_digits)
             )
