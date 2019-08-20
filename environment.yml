@@ -13,7 +13,9 @@ dependencies:
     - jupyter
     - jupyterlab
     - jupytext
-    - ipython
+    - ipytho
+    - pip:
+        - tables
     # Development requirements
     - black
     - pylint
