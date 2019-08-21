@@ -303,9 +303,7 @@ def read_swarm(path):
             if len(step_files) != n_rank:
                 raise ValueError(
                     "Invalid number of ranks '{}' for step '{}'".format(
-                        len(step_files), step_i
-                    )
-                )
+                        len(step_files), step_i))
         # Initialize the arrays to store the data for each step
         x, y, z, cc0 = np.array([]), np.array([]), np.array([]), np.array([])
         for rank_i in range(n_rank):
@@ -326,3 +324,33 @@ def read_swarm(path):
     # Create a dictionary
     swarm = {"time": time, "step": steps, "positions": positions}
     return swarm
+
+
+def save_swarm(swarm, name, save_path):
+    """
+    Save the particle position as a `hdf` file for each time step.
+
+    Parameters:
+    -----------
+    swarm : dict
+        Dictionary with the time, step and the particles positions.
+        The ``time`` and ``step`` are numpy arrays. ``time`` contains the time of
+        each step in Ma linked to the index of the ``positions`` list.
+        ``positions`` is a list of :class:`pandas.DataFrame` which contains the
+        coordinates `x`, `y` and `z` (in meters) and the flag `cc0` for each time step.
+    name : str
+        Name to save the data.
+    save_path : str or None
+        Path to the folder to save the particle position.
+    """
+    # Define time steps and the particle positions
+    steps = swarm['step']
+    positions = swarm['positions']
+    # Get max number of digits on steps
+    number_of_digits = len(str(steps.max()))
+    # Loop to save the particle position for each time step
+    for index in range(len(positions)):
+        filename = "{}_{}.h5".format(name, str(steps[index]).zfill(number_of_digits))
+        positions[index].to_hdf(os.path.join(save_path, filename), key="pd",
+                                mode="w", format="fixed")
+    print("All particle positions have been successfully saved on{}".format(save_path))
