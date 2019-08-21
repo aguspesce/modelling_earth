@@ -14,7 +14,7 @@ output_path = os.path.join(script_path, "output")
 swarm = me.read_swarm(path=md3d_output_path)
 
 # Take the particle position for time=0 linked to index 0
-positions = swarm['positions']
+positions = swarm["positions"]
 positions = positions[0]
 
 # Filter the number of particles to take only 2 particle per cell
