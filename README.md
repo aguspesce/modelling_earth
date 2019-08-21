@@ -13,10 +13,11 @@ First clone the repository and navigate through the newly created directory.
 
 The package needs the following dependencies to run:
 
-- numpy
-- scipy
-- xarray
-- pandas
+- `numpy`
+- `scipy`
+- `xarray`
+- `pandas`
+- `tables` (also known as `PyTables`)
 
 Besides, some examples need `matplotlib` to be installed.
 
