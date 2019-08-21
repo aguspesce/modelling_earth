@@ -13,3 +13,4 @@ dist/
 MANIFEST
 .coverage.*
 _figures
+_build/
