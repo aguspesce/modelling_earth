@@ -10,13 +10,12 @@ script_path = os.path.dirname(os.path.abspath(__file__))
 md3d_output_path = os.path.join(script_path, "run")
 output_path = os.path.join(script_path, "output")
 
-# Read and save the particles position
-position, time = me.read_swarm(path=md3d_output_path, save=True, save_path=output_path)
+# Read the particles position
+swarm = me.read_swarm(path=md3d_output_path)
 # Take the particle position for time=0 linked to index 0
-position_0 = position[0]
+position_0 = swarm['positions'][0]
 # Filter the number of particles
 position_fil = position_0[position_0.cc0 % 10 == 0]
-
 
 # Read the MD3D output files
 data = me.read_md3d_data(md3d_output_path)
