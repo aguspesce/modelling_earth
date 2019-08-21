@@ -266,7 +266,7 @@ def _read_velocity(path, shape, steps):
     return (velocity_x, velocity_y, velocity_z)
 
 
-def read_swarm(path, save=False, save_path=None):
+def read_swarm(path):
     """
     Read swarm files and return a list with the positions of the particles
     
@@ -274,12 +274,6 @@ def read_swarm(path, save=False, save_path=None):
     -----------
     path : str
         Path to the folder where the MD3D program output files are located.
-    save :  bool (optional)
-        If ``True`` the particles positions are save in ``hdf´´ format for each time
-        step. Default ``False``.
-    save_path : str or None
-        Path to the folder to save the particle position. Default to ``None``.
-        
     Returns:
     -------
     particle_position : list
@@ -331,10 +325,36 @@ def read_swarm(path, save=False, save_path=None):
         # Create a list with the frame
         particle_position.append(frame)
         # Save data frame for each time step
-        if (save == True):
-            filename = "particle_position_{}.h5".format(
-                str(step_i).zfill(number_of_digits))
-            frame.to_hdf(os.path.join(save_path, filename), key='pd', mode='w', 
-                         format='fixed')
-    print('All particle positions have been successfully saved on{}'.format(save_path))
     return particle_position, time
+
+
+def save_swarm(path, name, save_path):
+    """
+    Save the particle position as a `hdf` file for each time step.
+    
+    Parameters:
+    -----------
+    path : str
+        Path to the folder where the MD3D program output files are located.
+    name : str
+        Name to save the data.
+    save_path : str or None
+        Path to the folder to save the particle position. Default to ``None``.
+    """
+    # Define variable and parameters
+    parameters = _read_parameters(path)
+    print_step = parameters["print_step"]
+    max_steps = parameters["stepMAX"]
+    # Determine the number of time steps
+    steps, time = _read_times(path, print_step, max_steps)
+    # Get max number of digits on steps
+    number_of_digits = len(str(steps.max()))
+    # Read the particle positions
+    particle_position, time = read_swarm(path)
+    # Loop to save the particle position for each time step
+    for index in range(len(particle_position)):
+        step = steps[index]
+        filename = "{}_{}.h5".format(name, str(index).zfill(number_of_digits))
+        particle_position[index].to_hdf(os.path.join(save_path, filename), key='pd',
+                                 mode='w', format='fixed')
+    print('All particle positions have been successfully saved on{}'.format(save_path))
