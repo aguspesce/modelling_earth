@@ -8,14 +8,13 @@ dependencies:
     - scipy
     - xarray
     - pandas
+    - pytables
     # Optional dependencies
     - matplotlib
     - jupyter
     - jupyterlab
     - jupytext
-    - ipytho
-    - pip:
-        - tables
+    - ipython
     # Development requirements
     - black
     - pylint

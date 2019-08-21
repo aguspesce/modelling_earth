@@ -10,6 +10,37 @@ sudo: false
 notifications:
     email: false
 
+# Only build pushes to the master branch and tags. This avoids the double
+# builds than happen when working on a branch instead of a fork.
+branches:
+    only:
+        - master
+        # Regex to build tagged commits with version numbers
+        - /\d+\.\d+(\.\d+)?(\S*)?$/
+
+# Define environment variables common to all builds
+env:
+    global:
+        # These files list the requirements to be installed by conda
+        - CONDA_REQUIREMENTS=requirements.txt
+        - CONDA_REQUIREMENTS_DEV=requirements-dev.txt
+
+# Specify the build configurations. Be sure to only deploy from a single build.
+matrix:
+    include:
+        - os: linux
+          env:
+              - PYTHON=3.7
+        - os: linux
+          env:
+              - PYTHON=3.6
+        - os: osx
+          env:
+              - PYTHON=3.7
+        - os: osx
+          env:
+              - PYTHON=3.6
+
 # Setup the build environment
 before_install:
     # Get the Fatiando CI scripts to install miniconda

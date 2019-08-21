@@ -269,18 +269,19 @@ def _read_velocity(path, shape, steps):
 def read_swarm(path):
     """
     Read swarm files and return a list with the positions of the particles
-    
+
     Parameters:
     -----------
     path : str
         Path to the folder where the MD3D program output files are located.
+
     Returns:
     -------
     particle_position : list
-        List of `pandas.DataFrame` which contains the coordinate `x`, `y` and `z` (in 
+        List of `pandas.DataFrame` which contains the coordinate `x`, `y` and `z` (in
         meters) and the flag `cc0` for each time step.
     time : numpy array
-        Array containing the time of each step in Ma linked to the index of the 
+        Array containing the time of each step in Ma linked to the index of the
         `particle_position` list.
     """
     # Define variable and parameters
@@ -320,11 +321,10 @@ def read_swarm(path):
             y = np.hstack((y, y1))
             z = np.hstack((z, z1))
             # Create a data frame
-            data = {'x': x, 'y': y, 'z': z, 'cc0': cc0}
+            data = {"x": x, "y": y, "z": z, "cc0": cc0}
             frame = pd.DataFrame(data=data)
         # Create a list with the frame
         particle_position.append(frame)
-        # Save data frame for each time step
     return particle_position, time
 
 

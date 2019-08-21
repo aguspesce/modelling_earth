@@ -2,3 +2,4 @@ numpy
 scipy
 xarray
 pandas
+pytables

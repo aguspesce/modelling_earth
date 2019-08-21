@@ -1,5 +1,7 @@
 # Modelling Earth
 
+[![Travis CI](http://img.shields.io/travis/aguspesce/modelling_earth/master.svg?style=flat-square&label=TravisCI)](https://travis-ci.org/aguspesce/modelling_earth)
+
 Tools for building Earth models for geodynamics modelling.
 
 
@@ -11,10 +13,11 @@ First clone the repository and navigate through the newly created directory.
 
 The package needs the following dependencies to run:
 
-- numpy
-- scipy
-- xarray
-- pandas
+- `numpy`
+- `scipy`
+- `xarray`
+- `pandas`
+- `tables` (also known as `PyTables`)
 
 Besides, some examples need `matplotlib` to be installed.
 
