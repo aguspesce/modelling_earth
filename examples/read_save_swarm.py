@@ -13,7 +13,7 @@ output_path = os.path.join(script_path, "_output")
 # Read the particles position
 swarm = me.read_swarm(path=md3d_output_path)
 # Save the particle position
-me.save_swarm(swarm, 'particle', output_path)
+me.save_swarm(swarm, "particle", output_path)
 
 # Take the particle position for time=0 linked to index 0
 positions = swarm["positions"]
@@ -28,5 +28,5 @@ data = me.read_md3d_data(md3d_output_path)
 # Plot the particle position over the temperature for step=0
 fig, ax = plt.subplots()
 me.plot_scalar_2d(data.temperature.sel(time=0, y=0), ax=ax)
-plt.scatter(positions.x, positions.z, s=0.2, color='black', alpha=0.3)
+plt.scatter(positions.x, positions.z, s=0.2, color="black", alpha=0.3)
 plt.show()

@@ -303,7 +303,9 @@ def read_swarm(path):
             if len(step_files) != n_rank:
                 raise ValueError(
                     "Invalid number of ranks '{}' for step '{}'".format(
-                        len(step_files), step_i))
+                        len(step_files), step_i
+                    )
+                )
         # Initialize the arrays to store the data for each step
         x, y, z, cc0 = np.array([]), np.array([]), np.array([]), np.array([])
         for rank_i in range(n_rank):
@@ -344,13 +346,14 @@ def save_swarm(swarm, name, save_path):
         Path to the folder to save the particle position.
     """
     # Define time steps and the particle positions
-    steps = swarm['step']
-    positions = swarm['positions']
+    steps = swarm["step"]
+    positions = swarm["positions"]
     # Get max number of digits on steps
     number_of_digits = len(str(steps.max()))
     # Loop to save the particle position for each time step
     for index in range(len(positions)):
         filename = "{}_{}.h5".format(name, str(steps[index]).zfill(number_of_digits))
-        positions[index].to_hdf(os.path.join(save_path, filename), key="pd",
-                                mode="w", format="fixed")
+        positions[index].to_hdf(
+            os.path.join(save_path, filename), key="pd", mode="w", format="fixed"
+        )
     print("All particle positions have been successfully saved on{}".format(save_path))
