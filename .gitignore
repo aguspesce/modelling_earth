@@ -13,4 +13,8 @@ dist/
 MANIFEST
 .coverage.*
 _figures
-_build/
+doc/_build
+doc/api/generated
+doc/gallery
+doc/tutorials
+doc/sample_data
