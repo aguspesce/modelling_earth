@@ -26,5 +26,5 @@ data = me.read_md3d_data(md3d_output_path)
 # Plot the particle position over the temperature for step=0
 fig, ax = plt.subplots()
 me.plot_scalar_2d(data.temperature.sel(time=0, y=0), ax=ax)
-plt.plot(positions.x, positions.z, "c.", color="black", markersize=0.3)
+plt.scatter(positions.x, positions.z)
 plt.show()
