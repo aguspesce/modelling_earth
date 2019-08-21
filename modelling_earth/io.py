@@ -291,8 +291,6 @@ def read_swarm(path):
     max_steps = parameters["stepMAX"]
     # Determine the number of time steps
     steps, time = _read_times(path, print_step, max_steps)
-    # Get max number of digits on steps
-    number_of_digits = len(str(steps.max()))
     # Get swarm files
     swarm_files = [i for i in os.listdir(path) if "step_" in i]
     # Read the data
@@ -331,7 +329,7 @@ def read_swarm(path):
 def save_swarm(path, name, save_path):
     """
     Save the particle position as a `hdf` file for each time step.
-    
+
     Parameters:
     -----------
     path : str
@@ -354,7 +352,8 @@ def save_swarm(path, name, save_path):
     # Loop to save the particle position for each time step
     for index in range(len(particle_position)):
         step = steps[index]
-        filename = "{}_{}.h5".format(name, str(index).zfill(number_of_digits))
-        particle_position[index].to_hdf(os.path.join(save_path, filename), key='pd',
-                                 mode='w', format='fixed')
-    print('All particle positions have been successfully saved on{}'.format(save_path))
+        filename = "{}_{}.h5".format(name, str(step).zfill(number_of_digits))
+        particle_position[index].to_hdf(
+            os.path.join(save_path, filename), key="pd", mode="w", format="fixed"
+        )
+    print("All particle positions have been successfully saved on{}".format(save_path))
