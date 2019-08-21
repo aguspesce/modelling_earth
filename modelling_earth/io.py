@@ -266,38 +266,31 @@ def _read_velocity(path, shape, steps):
     return (velocity_x, velocity_y, velocity_z)
 
 
-def read_swarm(path, save=False, save_path=None):
+def read_swarm(path):
     """
     Read swarm files and return a list with the positions of the particles
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     path : str
         Path to the folder where the MD3D program output files are located.
-    save :  bool (optional)
-        If ``True`` the particles positions are save in ``hdf´´ format for each time
-        step. Default ``False``.
-    save_path : str or None
-        Path to the folder to save the particle position. Default to ``None``.
 
-    Returns:
+    Returns
     -------
-    particle_position : list
-        List of `pandas.DataFrame` which contains the coordinate `x`, `y` and `z` (in
-        meters) and the flag `cc0` for each time step.
-    time : numpy array
-        Array containing the time of each step in Ma linked to the index of the
-        `particle_position` list.
+    swarm : dict
+        Dictionary with the time, step and the particles positions.
+        The ``time`` and ``step`` are numpy arrays. ``time`` contains the time of
+        each step in Ma linked to the index of the ``positions`` list.
+        ``positions`` is a list of :class:`pandas.DataFrame` which contains the
+        coordinates `x`, `y` and `z` (in meters) and the flag `cc0` for each time step.
     """
     # Define variable and parameters
-    particle_position = []
+    positions = []
     parameters = _read_parameters(path)
     print_step = parameters["print_step"]
     max_steps = parameters["stepMAX"]
     # Determine the number of time steps
     steps, time = _read_times(path, print_step, max_steps)
-    # Get max number of digits on steps
-    number_of_digits = len(str(steps.max()))
     # Get swarm files
     swarm_files = [i for i in os.listdir(path) if "step_" in i]
     # Read the data
@@ -325,18 +318,11 @@ def read_swarm(path, save=False, save_path=None):
             x = np.hstack((x, x1))
             y = np.hstack((y, y1))
             z = np.hstack((z, z1))
-            # Create a data frame
-            data = {"x": x, "y": y, "z": z, "cc0": cc0}
-            frame = pd.DataFrame(data=data)
-        # Create a list with the frame
-        particle_position.append(frame)
-        # Save data frame for each time step
-        if save:
-            filename = "particle_position_{}.h5".format(
-                str(step_i).zfill(number_of_digits)
-            )
-            frame.to_hdf(
-                os.path.join(save_path, filename), key="pd", mode="w", format="fixed"
-            )
-    print("All particle positions have been successfully saved on{}".format(save_path))
-    return particle_position, time
+        # Create a data frame for the current step
+        data = {"x": x, "y": y, "z": z, "cc0": cc0}
+        frame = pd.DataFrame(data=data)
+        # Append the data frame  to the list of the particle positions
+        positions.append(frame)
+    # Create a dictionary
+    swarm = {"time": time, "step": steps, "positions": positions}
+    return swarm
