@@ -72,7 +72,7 @@ def plot_scalar_2d(dataarray, ax, **kwargs):
     return dataarray.plot.pcolormesh(ax=ax, x="x", y="z", **kwargs)
 
 
-def _plot_swarm_2d(swarm, ax, **kwargs):
+def plot_swarm_2d(swarm, ax, **kwargs):
     """
     Plot an scatter of the particle position for a defined time step
 
@@ -104,12 +104,15 @@ def _plot_swarm_2d(swarm, ax, **kwargs):
 
 def save_plots_2d(
     dataset,
+    swarm,
     save_path,
     filename="figure",
     scalar_to_plot=None,
     plot_velocity=True,
+    plot_swarm=False,
     scalar_kwargs=None,
     velocity_kwargs=None,
+    swarm_kwargs=None,
     figure_format="png",
     dpi=300,
     show=False,
@@ -123,6 +126,12 @@ def save_plots_2d(
     dataset : :class:`xarray.Dataset`
         Dataset containing values of scalar and/or velocity data. It must have only
         three dimensions:``x``, ``z`` and ``time``.
+    swarm : :class:`pandas.DataFrame`
+        DataFrame containing the particles positions for every time step. The positions
+        of the particles are given by ``x``, ``y`` and ``z`` in meters. The ``cc0`` is
+        the number assigned to each particle belonging to a finite element. The ``time``
+        is given in Ma. The index of the :class:`pandas.DataFrame` correspond to the
+        step number.
     save_path : str
         Path to the directory where the figures will be saved.
     filename : str (optional)
@@ -132,10 +141,14 @@ def save_plots_2d(
         plotted. Default to ``None``.
     plot_velocity : bool (optional)
         If ``True`` the velocities will be plotted. Default ``True``.
+    plot_swarm : bool (optional)
+        If ``True`` the particle position will be plotted. Dedault ``False``
     scalar_kwargs : dict (optional)
         Keyword arguments passed to :func:`modelling_earth.plot_scalar_2d`.
     velocity_kwargs : dict (optional)
         Keyword arguments passed to :func:`modelling_earth.plot_velocity_2d`.
+    swarm_kwargs : dict (optional)
+        Keyword arguments passed to :func:`modelling_earth.plot_swarm_2d`.
     figure_format : str (optional)
         Image format. Default ``png``.
     dpi : int (optional)
@@ -152,6 +165,8 @@ def save_plots_2d(
         velocity_kwargs = {}
     if scalar_kwargs is None:
         scalar_kwargs = {}
+    if swarm_kwargs is None:
+        swarm_kwargs = {}
     # Get maximum and minimum values of the scalar for the entire time
     if scalar_to_plot:
         vmin = getattr(dataset, scalar_to_plot).min()
@@ -179,6 +194,8 @@ def save_plots_2d(
             quiver = plot_velocity_2d(
                 dataset.sel(time=time), ax=ax, scale=scale, **velocity_kwargs
             )
+        if plot_swarm:
+            plot_swarm_2d(swarm.loc[step], ax=ax, **swarm_kwargs)
         # Configure plot
         ax.set_aspect("equal")
         ax.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
