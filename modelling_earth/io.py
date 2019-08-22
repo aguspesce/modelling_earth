@@ -328,7 +328,7 @@ def read_swarm(path):
     return swarm
 
 
-def save_swarm(swarm, name, save_path, verbose=False):
+def save_swarm(swarm, basename, save_path, verbose=False):
     """
     Save the particle position as a HDF5 file for each time step
 
@@ -340,8 +340,8 @@ def save_swarm(swarm, name, save_path, verbose=False):
         each step in Ma linked to the index of the ``positions`` list.
         ``positions`` is a list of :class:`pandas.DataFrame`s that contain the
         coordinates `x`, `y` and `z` (in meters) and the flag `cc0` for each time step.
-    name : str
-        Name to save the data.
+    basename : str
+        Basename for the output files where the swarm data will be saved.
     save_path : str or None
         Path to the folder to save the particle position.
     verbose : bool (optional)
@@ -355,7 +355,9 @@ def save_swarm(swarm, name, save_path, verbose=False):
     number_of_digits = len(str(steps.max()))
     # Loop to save the particle position for each time step
     for index in range(len(positions)):
-        filename = "{}_{}.h5".format(name, str(steps[index]).zfill(number_of_digits))
+        filename = "{}_{}.h5".format(
+            basename, str(steps[index]).zfill(number_of_digits)
+        )
         positions[index].to_hdf(
             os.path.join(save_path, filename), key="pd", mode="w", format="fixed"
         )
