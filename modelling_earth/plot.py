@@ -92,12 +92,12 @@ def _plot_swarm_2d(swarm, ax, **kwargs):
         be 0.2, 'black' and 0.3 respectively.
     """
     # Fix some parameter un the kwargs
-    if 's' not in kwargs:
-        kwargs['s'] = 0.2
-    if 'color' not in kwargs:
-        kwargs['color'] = 'black'
-    if 'alpha' not in kwargs:
-        kwargs['alpha'] = 0.3
+    if "s" not in kwargs:
+        kwargs["s"] = 0.2
+    if "color" not in kwargs:
+        kwargs["color"] = "black"
+    if "alpha" not in kwargs:
+        kwargs["alpha"] = 0.3
     # Plot
     return ax.scatter(swarm.x, swarm.z, **kwargs)
 
