@@ -72,19 +72,37 @@ def plot_scalar_2d(dataarray, ax, **kwargs):
     return dataarray.plot.pcolormesh(ax=ax, x="x", y="z", **kwargs)
 
 
-def _plot_swarm_2d(position_step, ax):
+def _plot_swarm_2d(swarm, step, ax, **kwargs):
     """
     Plot an scatter of the particle position for a defined time step
 
     Parameter
     ---------
-    position_step : :class:`pandas.DataFrame`
-        Contain the coordinates `x`, `y` and `z` (in meters) and the flag `cc0` for
-        each time step.
+    swarm : :class:`pandas.DataFrame`
+        DataFrame containing the particles positions for every time step. The positions
+        of the particles are given by ``x``, ``y`` and ``z`` in meters. The ``cc0`` is
+        the number assigned to each particle belonging to a finite element. The ``time``
+        is given in Ma. The index of the :class:`pandas.DataFrame` correspond to the
+        step number.
+    step : float
+        Specific time step to plot the particle position.
     ax : :class:`matplotlib:Axes`
         Axe where the plot will be added.
-    """
-    ax.scatter(position_step.x, position_step.z, s=0.2, color='black', alpha=0.3)
+    kwargs : dict
+        Keyword arguments passed to :func:`matplotlib.pyplot.scatter`. By default the
+        marker size ``s`` , the ``color`` and the alpha blending value ``alpha`` will
+        be 0.2, 'black' and 0.3 respectively.
+    """"
+    # Take only the positions for the specific step
+    swarm = swarm.loc[step]
+    if 's' not in kwargs:
+        kwargs[´s'] = 0.2
+    if 'color' not in kwargs:
+        kwargs['color'] = 'black'
+    if 'alpha' not in kwargs:
+        kwargs['alpha'] = 0.3
+
+    ax.scatter(position_step.x, position_step.z, **kwargs)
 
 
 def save_plots_2d(
