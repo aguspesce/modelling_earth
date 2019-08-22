@@ -278,10 +278,11 @@ def read_md3d_swarm(path):
     Returns
     -------
     swarm : :class:`pandas.DataFrame`
-        DataFrame containing the particles positions for every time step.
-        The positions of the particles are given by ``x``, ``y`` and ``z`` in meters.
-        The ``cc0`` is the number assigned to each particle belonging to a finite
-        element. The ``time`` is given in Ma.
+        DataFrame containing the particles positions for every time step. The positions
+        of the particles are given by ``x``, ``y`` and ``z`` in meters. The ``cc0`` is
+        the number assigned to each particle belonging to a finite element. The ``time``
+        is given in Ma. The index of the :class:`pandas.DataFrame` correspond to the
+        step number.
     """
     # Determine the number of time steps
     parameters = _read_parameters(path)
@@ -328,6 +329,6 @@ def _read_m3d3_single_swarm(path, step, time, n_rank):
         y = np.hstack((y, y_rank))
         z = np.hstack((z, z_rank))
     # Create a data frame for the current step
-    data = {"x": x, "y": y, "z": z, "cc0": cc0, "step": step, "time": time}
-    df = pd.DataFrame(data=data)
+    data = {"x": x, "y": y, "z": z, "cc0": cc0, "time": time}
+    df = pd.DataFrame(data=data, index=step * np.ones_like(x, dtype=int))
     return df
