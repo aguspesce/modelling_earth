@@ -330,7 +330,7 @@ def read_swarm(path):
 
 def save_swarm(swarm, name, save_path):
     """
-    Save the particle position as a `hdf` file for each time step.
+    Save the particle position as a HDF5 file for each time step
 
     Parameters:
     -----------
