@@ -328,7 +328,7 @@ def read_swarm(path):
     return swarm
 
 
-def save_swarm(swarm, name, save_path):
+def save_swarm(swarm, name, save_path, verbose=False):
     """
     Save the particle position as a HDF5 file for each time step
 
@@ -344,6 +344,9 @@ def save_swarm(swarm, name, save_path):
         Name to save the data.
     save_path : str or None
         Path to the folder to save the particle position.
+    verbose : bool (optional)
+        If True, a printed message will be prompted after all files have been
+        sucessfully saved. Default False.
     """
     # Define time steps and the particle positions
     steps = swarm["step"]
@@ -357,4 +360,8 @@ def save_swarm(swarm, name, save_path):
             os.path.join(save_path, filename), key="pd", mode="w", format="fixed"
         )
     if verbose:
-        print("All particle positions have been successfully saved on '{}'".format(save_path))
+        print(
+            "All particle positions have been successfully saved on '{}'".format(
+                save_path
+            )
+        )
