@@ -72,6 +72,21 @@ def plot_scalar_2d(dataarray, ax, **kwargs):
     return dataarray.plot.pcolormesh(ax=ax, x="x", y="z", **kwargs)
 
 
+def _plot_swarm_2d(position_step, ax):
+    """
+    Plot an scatter of the particle position for a defined time step
+
+    Parameter
+    ---------
+    position_step : :class:`pandas.DataFrame`
+        Contain the coordinates `x`, `y` and `z` (in meters) and the flag `cc0` for
+        each time step.
+    ax : :class:`matplotlib:Axes`
+        Axe where the plot will be added.
+    """
+    ax.scatter(position_step.x, position_step.z, s=0.2, color='black', alpha=0.3)
+
+
 def save_plots_2d(
     dataset,
     save_path,
@@ -163,18 +178,3 @@ def save_plots_2d(
         plt.clf()
     print("All figures have been succesfully saved on {}".format(save_path))
     plt.close("all")
-
-
-def _plot_swarm_2d(position_step, ax):
-    """
-    Plot an scatter of the particle position for a defined time step
-
-    Parameter
-    ---------
-    position_step : :class:`pandas.DataFrame`
-        Contain the coordinates `x`, `y` and `z` (in meters) and the flag `cc0` for
-        each time step.
-    ax : :class:`matplotlib:Axes`
-        Axe where the plot will be added.
-    """
-    ax.scatter(position_step.x, position_step.z, s=0.2, color='black', alpha=0.3)
