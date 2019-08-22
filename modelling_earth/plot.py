@@ -90,16 +90,16 @@ def _plot_swarm_2d(swarm, ax, **kwargs):
         Keyword arguments passed to :func:`matplotlib.pyplot.scatter`. By default the
         marker size ``s`` , the ``color`` and the alpha blending value ``alpha`` will
         be 0.2, 'black' and 0.3 respectively.
-    """"
-    # Take only the positions for the specific step
-    swarm = swarm.loc[step]
+    """
+    # Fix some parameter un the kwargs
     if 's' not in kwargs:
-        kwargs[´s'] = 0.2
+        kwargs['s'] = 0.2
     if 'color' not in kwargs:
         kwargs['color'] = 'black'
     if 'alpha' not in kwargs:
         kwargs['alpha'] = 0.3
-    ax.scatter(position_step.x, position_step.z, **kwargs)
+    # Plot
+    return ax.scatter(swarm.x, swarm.z, **kwargs)
 
 
 def save_plots_2d(
