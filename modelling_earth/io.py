@@ -338,7 +338,7 @@ def save_swarm(swarm, name, save_path):
         Dictionary with the time, step and the particles positions.
         The ``time`` and ``step`` are numpy arrays. ``time`` contains the time of
         each step in Ma linked to the index of the ``positions`` list.
-        ``positions`` is a list of :class:`pandas.DataFrame` which contains the
+        ``positions`` is a list of :class:`pandas.DataFrame`s that contain the
         coordinates `x`, `y` and `z` (in meters) and the flag `cc0` for each time step.
     name : str
         Name to save the data.
