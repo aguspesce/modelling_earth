@@ -163,3 +163,7 @@ def save_plots_2d(
         plt.clf()
     print("All figures have been succesfully saved on {}".format(save_path))
     plt.close("all")
+
+
+def _plot_swarm_2d(position_step, ax, **kwargs):
+    plt.scatter(position_step.x, position_step.z, s=0.2, color='black', alpha=0.3)
