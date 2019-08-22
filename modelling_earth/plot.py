@@ -72,20 +72,18 @@ def plot_scalar_2d(dataarray, ax, **kwargs):
     return dataarray.plot.pcolormesh(ax=ax, x="x", y="z", **kwargs)
 
 
-def _plot_swarm_2d(swarm, step, ax, **kwargs):
+def _plot_swarm_2d(swarm, ax, **kwargs):
     """
     Plot an scatter of the particle position for a defined time step
 
     Parameter
     ---------
     swarm : :class:`pandas.DataFrame`
-        DataFrame containing the particles positions for every time step. The positions
-        of the particles are given by ``x``, ``y`` and ``z`` in meters. The ``cc0`` is
-        the number assigned to each particle belonging to a finite element. The ``time``
-        is given in Ma. The index of the :class:`pandas.DataFrame` correspond to the
-        step number.
-    step : float
-        Specific time step to plot the particle position.
+        DataFrame containing the particles positions for a specific time step. The
+        positions of the particles are given by ``x``, ``y`` and ``z`` in meters. The
+        ``cc0`` is the number assigned to each particle belonging to a finite element.
+        The ``time`` is given in Ma. The index of the :class:`pandas.DataFrame`
+        correspond to the step number.
     ax : :class:`matplotlib:Axes`
         Axe where the plot will be added.
     kwargs : dict
@@ -101,7 +99,6 @@ def _plot_swarm_2d(swarm, step, ax, **kwargs):
         kwargs['color'] = 'black'
     if 'alpha' not in kwargs:
         kwargs['alpha'] = 0.3
-
     ax.scatter(position_step.x, position_step.z, **kwargs)
 
 
