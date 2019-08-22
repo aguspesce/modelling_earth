@@ -357,7 +357,7 @@ def save_swarm(swarm, basename, save_path, verbose=False, **kwargs):
     positions = swarm["positions"]
     # Get max number of digits on steps
     number_of_digits = len(str(steps.max()))
-    # Define kwargs if missing
+    # Define default values for some kwargs
     kwargs["mode"] = "w"
     if "key" not in kwargs:
         kwargs["key"] = "swarm"
