@@ -165,5 +165,16 @@ def save_plots_2d(
     plt.close("all")
 
 
-def _plot_swarm_2d(position_step, ax, **kwargs):
+def _plot_swarm_2d(position_step, ax):
+    """
+    Plot an scatter of the particle position for a defined time step
+
+    Parameter
+    ---------
+    position_step : :class:`pandas.DataFrame`
+        Contain the coordinates `x`, `y` and `z` (in meters) and the flag `cc0` for
+        each time step.
+    ax : :class:`matplotlib:Axes`
+        Axe where the plot will be added.
+    """
     plt.scatter(position_step.x, position_step.z, s=0.2, color='black', alpha=0.3)
