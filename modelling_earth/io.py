@@ -328,7 +328,7 @@ def read_swarm(path):
     return swarm
 
 
-def save_swarm(swarm, basename, save_path, verbose=False):
+def save_swarm(swarm, basename, save_path, verbose=False, **kwargs):
     """
     Save the particle position as a HDF5 file for each time step
 
@@ -347,20 +347,26 @@ def save_swarm(swarm, basename, save_path, verbose=False):
     verbose : bool (optional)
         If True, a printed message will be prompted after all files have been
         sucessfully saved. Default False.
+    kwargs :
+        Keyword arguments that will be passed to :meth:`pandas.DataFrame.to_hdf`. By
+        default the ``mode`` will be always set to ``"w"``, and ``key`` will be
+        ``swarm`` if it's not specified on ``kwargs``.
     """
     # Define time steps and the particle positions
     steps = swarm["step"]
     positions = swarm["positions"]
     # Get max number of digits on steps
     number_of_digits = len(str(steps.max()))
+    # Define kwargs if missing
+    kwargs["mode"] = "w"
+    if "key" not in kwargs:
+        kwargs["key"] = "swarm"
     # Loop to save the particle position for each time step
     for index in range(len(positions)):
         filename = "{}_{}.h5".format(
             basename, str(steps[index]).zfill(number_of_digits)
         )
-        positions[index].to_hdf(
-            os.path.join(save_path, filename), key="pd", mode="w", format="fixed"
-        )
+        positions[index].to_hdf(os.path.join(save_path, filename), **kwargs)
     if verbose:
         print(
             "All particle positions have been successfully saved on '{}'".format(
