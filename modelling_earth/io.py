@@ -356,4 +356,5 @@ def save_swarm(swarm, name, save_path):
         positions[index].to_hdf(
             os.path.join(save_path, filename), key="pd", mode="w", format="fixed"
         )
-    print("All particle positions have been successfully saved on{}".format(save_path))
+    if verbose:
+        print("All particle positions have been successfully saved on '{}'".format(save_path))
