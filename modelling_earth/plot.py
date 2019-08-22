@@ -177,4 +177,4 @@ def _plot_swarm_2d(position_step, ax):
     ax : :class:`matplotlib:Axes`
         Axe where the plot will be added.
     """
-    plt.scatter(position_step.x, position_step.z, s=0.2, color='black', alpha=0.3)
+    ax.scatter(position_step.x, position_step.z, s=0.2, color='black', alpha=0.3)
