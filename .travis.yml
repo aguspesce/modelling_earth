@@ -21,23 +21,34 @@ branches:
 # Define environment variables common to all builds
 env:
     global:
+        # Encrypted variables
+        # Github Token for pushing the built HTML (GH_TOKEN)
+        - secure: ""
         # These files list the requirements to be installed by conda
         - CONDA_REQUIREMENTS=requirements.txt
         - CONDA_REQUIREMENTS_DEV=requirements-dev.txt
+        # Define varibale to control if the docs must be deployed
+        - DEPLOY_DOCS=false
 
 # Specify the build configurations. Be sure to only deploy from a single build.
 matrix:
     include:
-        - os: linux
+        # Main build to deploy to Github pages
+        - name: "Linux - Python 3.7 (deploy docs)"
+          os: linux
           env:
               - PYTHON=3.7
-        - os: linux
+              - DEPLOY_DOCS=true
+        - name: "Linux - Python 3.6"
+          os: linux
           env:
               - PYTHON=3.6
-        - os: osx
+        - name: "OSX - Python 3.7"
+          os: osx
           env:
               - PYTHON=3.7
-        - os: osx
+        - name: "OSX - Python 3.6"
+          os: osx
           env:
               - PYTHON=3.6
 
@@ -61,3 +72,14 @@ install:
 script:
     # Check format with black
     - make check
+    # Build the docs
+    - make -C doc clean all
+
+deploy:
+    # Push the built HTML in doc/_build/html to gh_pages branch
+    - provider: script
+      script: continuous-integration/travis/deploy-gh-pages.sh
+      skip_cleanup: true
+      on:
+          branch: master
+          condition: '$DEPLOY_DOCS == "true"'
