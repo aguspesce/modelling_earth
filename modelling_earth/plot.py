@@ -1,3 +1,6 @@
+"""
+Functions to plot data
+"""
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,9 +15,8 @@ def plot_velocity_2d(dataset, ax, slice_grid=4, **kwargs):
     dataset : :class:`xarray.Dataset`
         Dataset containing the velocity data. It must have only two dimensions given by
         ``x`` and ``z`` coordinates and contain the components of the velocity for each
-        grid point given by ``velocity_x`` and ``velocity_z``
-        :class:`xarray.DataArray`s.
-    ax : :class:`matplotlib:Axes`
+        grid point given by ``velocity_x`` and ``velocity_z``.
+    ax : :class:`matplotlib.Axes`
         Axe where the plot will be added.
     slice_grid : int, tuple or None (optional)
         Slice the grid coordinates to reduce the number of arrows that will be plotted.
