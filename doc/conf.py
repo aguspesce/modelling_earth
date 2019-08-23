@@ -85,3 +85,8 @@ html_context = {
     'github_repo': 'aguspesce/modelling_earth',
     'github_version': 'master',
 }
+
+
+# Load the custom CSS files (needs sphinx >= 1.6 for this to work)
+def setup(app):
+    app.add_stylesheet("style.css")
