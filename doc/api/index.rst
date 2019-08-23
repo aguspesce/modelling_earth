@@ -14,7 +14,7 @@ Input and Output
     :toctree: generated/
 
     read_md3d_data
-    read_swarm
+    read_md3d_swarm
 
 Plots
 -----
