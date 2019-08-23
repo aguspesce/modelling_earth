@@ -21,23 +21,34 @@ branches:
 # Define environment variables common to all builds
 env:
     global:
+        # Encrypted variables
+        # Github Token for pushing the built HTML (GH_TOKEN)
+        - secure: "Gp8YnbKxXn316lTo8kQXehEwbRiC3PKPhBm45xFvJZJNt+ztuCmlWE9NQPzKMG8x3FgR4HwzwG/8MeYb4ATx4UvUSgLYSGtNsTdS064oKhcWK3ESvBD94ESGgk9r7VKrKbo++X2pfGQjIxo3LcXbfOn8CscUQh5gfvA3MkFfZNDmET+/FNvLMwz9ntzkgH04UcG07865VgTO67f4a88F/qVE/niCTkOYVHg6AdHTjS+RK+ZlRpvnC/bBSV3fwGx3PPVNqlylDmhD1+ALVTKsFrfW+7oWrwSZb8xYchWyzi6di6RLkm2NqsPu/nvtAjdYdT5ry/x5z0G1xxsAbuOIYyYMKrxvKGENYkVT8f6pJ4baC7uiv6ao4HPvfAufg3AZ3TO4aWcgNy2oGWkQMlvbgDySiP4WSjR5a4ex2XrsehCdtyiG0JGggKPrsqLtshhvCqRL03daHmRXpcz8mAWG9RGl7c5vq4eq5CZb1CcDlzeD1mV3/mtfvfoz4WVwTC9P3d/dBLan/IXfKxHnBsYl/06wcBCWGGOdhvDIzJzk2QiOO38VL6sYKMkdJDVT37t/T5n1mGHC5Nz289lRyjtvEx5in/brIkrIX4Qe7CSRL28pX9zcWC5ht5wSMBSUaL/xv2RwykJIqt1Wm1qxztbJrKUbwIChzakDmX6pTtjEnBc="
         # These files list the requirements to be installed by conda
         - CONDA_REQUIREMENTS=requirements.txt
         - CONDA_REQUIREMENTS_DEV=requirements-dev.txt
+        # Define varibale to control if the docs must be deployed
+        - DEPLOY_DOCS=false
 
 # Specify the build configurations. Be sure to only deploy from a single build.
 matrix:
     include:
-        - os: linux
+        # Main build to deploy to Github pages
+        - name: "Linux - Python 3.7 (deploy docs)"
+          os: linux
           env:
               - PYTHON=3.7
-        - os: linux
+              - DEPLOY_DOCS=true
+        - name: "Linux - Python 3.6"
+          os: linux
           env:
               - PYTHON=3.6
-        - os: osx
+        - name: "OSX - Python 3.7"
+          os: osx
           env:
               - PYTHON=3.7
-        - os: osx
+        - name: "OSX - Python 3.6"
+          os: osx
           env:
               - PYTHON=3.6
 
@@ -61,3 +72,14 @@ install:
 script:
     # Check format with black
     - make check
+    # Build the docs
+    - make -C doc clean all
+
+deploy:
+    # Push the built HTML in doc/_build/html to gh_pages branch
+    - provider: script
+      script: continuous-integration/travis/deploy-gh-pages.sh
+      skip_cleanup: true
+      on:
+          branch: master
+          condition: '$DEPLOY_DOCS == "true"'
