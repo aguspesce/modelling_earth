@@ -12,7 +12,7 @@ dist/
 *.egg-info
 MANIFEST
 .coverage.*
-_figures
+examples/_figures
 doc/_build
 doc/api/generated
 doc/gallery
