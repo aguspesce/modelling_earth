@@ -104,12 +104,11 @@ def plot_swarm_2d(swarm, ax, **kwargs):
 
 def save_plots_2d(
     dataset,
-    swarm,
     save_path,
     filename="figure",
+    swarm=None,
     scalar_to_plot=None,
     plot_velocity=True,
-    plot_swarm=False,
     scalar_kwargs=None,
     velocity_kwargs=None,
     swarm_kwargs=None,
@@ -126,23 +125,21 @@ def save_plots_2d(
     dataset : :class:`xarray.Dataset`
         Dataset containing values of scalar and/or velocity data. It must have only
         three dimensions:``x``, ``z`` and ``time``.
-    swarm : :class:`pandas.DataFrame`
+    save_path : str
+        Path to the directory where the figures will be saved.
+    filename : str (optional)
+        Base for the filename of the figures. Default to ``figure``.
+    swarm : :class:`pandas.DataFrame` or None
         DataFrame containing the particles positions for every time step. The positions
         of the particles are given by ``x``, ``y`` and ``z`` in meters. The ``cc0`` is
         the number assigned to each particle belonging to a finite element. The ``time``
         is given in Ma. The index of the :class:`pandas.DataFrame` correspond to the
         step number.
-    save_path : str
-        Path to the directory where the figures will be saved.
-    filename : str (optional)
-        Base for the filename of the figures. Default to ``figure``.
     scalar_to_plot : str or None
         Name of the scalar dataset that will be plotted. If ``None``, no scalar will be
         plotted. Default to ``None``.
     plot_velocity : bool (optional)
         If ``True`` the velocities will be plotted. Default ``True``.
-    plot_swarm : bool (optional)
-        If ``True`` the particle position will be plotted. Dedault ``False``
     scalar_kwargs : dict (optional)
         Keyword arguments passed to :func:`modelling_earth.plot_scalar_2d`.
     velocity_kwargs : dict (optional)
@@ -176,7 +173,7 @@ def save_plots_2d(
     # Initialize quiver to None
     quiver = None
     # Generate figure
-    for step, time in zip(dataset.step, dataset.time):
+    for step, time in zip(dataset.step.values, dataset.time.values):
         fig, ax = plt.subplots(**kwargs)
         if scalar_to_plot:
             plot_scalar_2d(
@@ -194,7 +191,7 @@ def save_plots_2d(
             quiver = plot_velocity_2d(
                 dataset.sel(time=time), ax=ax, scale=scale, **velocity_kwargs
             )
-        if plot_swarm:
+        if swarm is not None:
             plot_swarm_2d(swarm.loc[step], ax=ax, **swarm_kwargs)
         # Configure plot
         ax.set_aspect("equal")
@@ -202,11 +199,11 @@ def save_plots_2d(
         plt.tight_layout()
         # Save the plot
         figure_name = "{}_{}.{}".format(
-            filename, str(step.values).zfill(number_of_digits), figure_format
+            filename, str(step).zfill(number_of_digits), figure_format
         )
         plt.savefig(os.path.join(save_path, figure_name), dpi=dpi)
         if show:
             plt.show()
         plt.clf()
-    print("All figures have been succesfully saved on {}".format(save_path))
+    print("All figures have been successfully saved on {}".format(save_path))
     plt.close("all")
