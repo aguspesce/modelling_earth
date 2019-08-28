@@ -17,9 +17,11 @@ swarm = swarm[swarm.cc0 < 2]
 # Read the MD3D output files
 dataset = me.read_md3d_data(md3d_output_path)
 
-## Plot the particle position over the temperature for a fxed time step
+# Plot the particle position over the temperature for a fxed time step
+# Define the time and the step to plot
 time = dataset.time.values[1]
 step = dataset.step.sel(time=time).values
+# Plot
 fig, ax = plt.subplots()
 me.plot_scalar_2d(dataset.temperature.sel(time=time, y=0), ax=ax)
 me.plot_swarm_2d(swarm.loc[step], ax=ax)
@@ -30,7 +32,7 @@ figs_dir = os.path.join(script_path, "_figures")
 if not os.path.isdir(figs_dir):
     os.mkdir(figs_dir)
 me.save_plots_2d(
-    dataset.sel(**filter_profile),
+    dataset.sel(y=0),
     figs_dir,
     filename="temper_particle",
     swarm=swarm,
