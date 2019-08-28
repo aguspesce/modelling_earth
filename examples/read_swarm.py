@@ -11,18 +11,31 @@ md3d_output_path = os.path.join(script_path, "run")
 
 # Read the particles position
 swarm = me.read_md3d_swarm(md3d_output_path)
-
-# Take only the positions for the first step (step == 0)
-swarm = swarm.loc[0]
-
 # Reduce the number of particles to take only 2 particle per cell
 swarm = swarm[swarm.cc0 < 2]
 
 # Read the MD3D output files
-data = me.read_md3d_data(md3d_output_path)
+dataset = me.read_md3d_data(md3d_output_path)
 
-# Plot the particle position over the temperature for step=0
+# Plot the particle position over the temperature for a fxed time step
+# Define the time and the step to plot
+time = dataset.time.values[1]
+step = dataset.step.sel(time=time).values
+# Plot
 fig, ax = plt.subplots()
-me.plot_scalar_2d(data.temperature.sel(time=0, y=0), ax=ax)
-plt.scatter(swarm.x, swarm.z, s=0.1, c="black")
+me.plot_scalar_2d(dataset.temperature.sel(time=time, y=0), ax=ax)
+me.plot_swarm_2d(swarm.loc[step], ax=ax)
 plt.show()
+
+# Plot all temperatures and particle position for every time and save the figures
+figs_dir = os.path.join(script_path, "_figures")
+if not os.path.isdir(figs_dir):
+    os.mkdir(figs_dir)
+me.save_plots_2d(
+    dataset.sel(y=0),
+    figs_dir,
+    filename="temper_particle",
+    swarm=swarm,
+    scalar_to_plot="temperature",
+    plot_velocity=False,
+)

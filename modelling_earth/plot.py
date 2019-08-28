@@ -72,14 +72,46 @@ def plot_scalar_2d(dataarray, ax, **kwargs):
     return dataarray.plot.pcolormesh(ax=ax, x="x", y="z", **kwargs)
 
 
+def plot_swarm_2d(swarm, ax, **kwargs):
+    """
+    Plot an scatter of the particle position for a defined time step
+
+    Parameter
+    ---------
+    swarm : :class:`pandas.DataFrame`
+        DataFrame containing the particles positions for a specific time step. The
+        positions of the particles are given by ``x``, ``y`` and ``z`` in meters. The
+        ``cc0`` is the number assigned to each particle belonging to a finite element.
+        The ``time`` is given in Ma. The index of the :class:`pandas.DataFrame`
+        correspond to the step number.
+    ax : :class:`matplotlib:Axes`
+        Axe where the plot will be added.
+    kwargs : dict
+        Keyword arguments passed to :func:`matplotlib.pyplot.scatter`. By default the
+        marker size ``s`` , the ``color`` and the alpha blending value ``alpha`` will
+        be 0.2, 'black' and 0.3 respectively.
+    """
+    # Fix some parameter un the kwargs
+    if "s" not in kwargs:
+        kwargs["s"] = 0.2
+    if "color" not in kwargs:
+        kwargs["color"] = "black"
+    if "alpha" not in kwargs:
+        kwargs["alpha"] = 0.3
+    # Plot
+    return ax.scatter(swarm.x, swarm.z, **kwargs)
+
+
 def save_plots_2d(
     dataset,
     save_path,
     filename="figure",
+    swarm=None,
     scalar_to_plot=None,
     plot_velocity=True,
     scalar_kwargs=None,
     velocity_kwargs=None,
+    swarm_kwargs=None,
     figure_format="png",
     dpi=300,
     show=False,
@@ -97,6 +129,12 @@ def save_plots_2d(
         Path to the directory where the figures will be saved.
     filename : str (optional)
         Base for the filename of the figures. Default to ``figure``.
+    swarm : :class:`pandas.DataFrame` or None
+        DataFrame containing the particles positions for every time step. The positions
+        of the particles are given by ``x``, ``y`` and ``z`` in meters. The ``cc0`` is
+        the number assigned to each particle belonging to a finite element. The ``time``
+        is given in Ma. The index of the :class:`pandas.DataFrame` correspond to the
+        step number.
     scalar_to_plot : str or None
         Name of the scalar dataset that will be plotted. If ``None``, no scalar will be
         plotted. Default to ``None``.
@@ -106,6 +144,8 @@ def save_plots_2d(
         Keyword arguments passed to :func:`modelling_earth.plot_scalar_2d`.
     velocity_kwargs : dict (optional)
         Keyword arguments passed to :func:`modelling_earth.plot_velocity_2d`.
+    swarm_kwargs : dict (optional)
+        Keyword arguments passed to :func:`modelling_earth.plot_swarm_2d`.
     figure_format : str (optional)
         Image format. Default ``png``.
     dpi : int (optional)
@@ -122,6 +162,8 @@ def save_plots_2d(
         velocity_kwargs = {}
     if scalar_kwargs is None:
         scalar_kwargs = {}
+    if swarm_kwargs is None:
+        swarm_kwargs = {}
     # Get maximum and minimum values of the scalar for the entire time
     if scalar_to_plot:
         vmin = getattr(dataset, scalar_to_plot).min()
@@ -131,7 +173,7 @@ def save_plots_2d(
     # Initialize quiver to None
     quiver = None
     # Generate figure
-    for step, time in zip(dataset.step, dataset.time):
+    for step, time in zip(dataset.step.values, dataset.time.values):
         fig, ax = plt.subplots(**kwargs)
         if scalar_to_plot:
             plot_scalar_2d(
@@ -149,17 +191,19 @@ def save_plots_2d(
             quiver = plot_velocity_2d(
                 dataset.sel(time=time), ax=ax, scale=scale, **velocity_kwargs
             )
+        if swarm is not None:
+            plot_swarm_2d(swarm.loc[step], ax=ax, **swarm_kwargs)
         # Configure plot
         ax.set_aspect("equal")
         ax.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
         plt.tight_layout()
         # Save the plot
         figure_name = "{}_{}.{}".format(
-            filename, str(step.values).zfill(number_of_digits), figure_format
+            filename, str(step).zfill(number_of_digits), figure_format
         )
         plt.savefig(os.path.join(save_path, figure_name), dpi=dpi)
         if show:
             plt.show()
         plt.clf()
-    print("All figures have been succesfully saved on {}".format(save_path))
+    print("All figures have been successfully saved on {}".format(save_path))
     plt.close("all")
