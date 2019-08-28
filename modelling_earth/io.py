@@ -277,12 +277,11 @@ def read_md3d_swarm(path):
 
     Returns
     -------
-    swarm : :class:`pandas.DataFrame`
-        DataFrame containing the particles positions for every time step. The positions
-        of the particles are given by ``x``, ``y`` and ``z`` in meters. The ``cc0`` is
-        the number assigned to each particle belonging to a finite element. The ``time``
-        is given in Ma. The index of the :class:`pandas.DataFrame` correspond to the
-        step number.
+    swarm : :class:`xarray.Dataset`
+        :class:`xarray.Dataset` containing the particles positions for every time step.
+        The positions of the particles are given by ``x``, ``y`` and ``z`` in meters.
+        The ``cc0`` is the number assigned to each particle belonging to a finite
+        element. The ``time`` is given in Ma.
     """
     # Determine the number of time steps
     parameters = _read_parameters(path)
@@ -310,6 +309,16 @@ def read_md3d_swarm(path):
         dataframes.append(_read_m3d3_single_swarm(path, step, time, n_rank))
     # Concatenate the dataframes
     swarm = pd.concat(dataframes)
+    # Convert the swarm into a xr.Dataset
+    dims = ["step"]
+    coords = {"step": ("step", swarm.index), "time": ("step", swarm.time)}
+    data_vars = {
+        "x": (dims, swarm.x),
+        "y": (dims, swarm.y),
+        "z": (dims, swarm.z),
+        "cc0": (dims, swarm.cc0),
+    }
+    swarm = xr.Dataset(data_vars, coords=coords, attrs=parameters)
     return swarm
 
 
