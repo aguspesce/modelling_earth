@@ -313,7 +313,7 @@ def read_md3d_swarm(path):
     return swarm
 
 
-def _read_m3d3_single_swarm(path, step, time, n_rank):
+def _read_md3d_single_swarm(path, step, time, n_rank):
     """
     Read swarm positions for a single time step from MD3D output files
     """
