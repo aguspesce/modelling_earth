@@ -319,7 +319,7 @@ def _read_md3d_single_swarm(path, step, time, n_rank):
     """
     x, y, z, cc0 = tuple(np.array([]) for i in range(4))
     for rank_i in range(n_rank):
-        filename = "step_{}-rank{}.txt".format(step, rank_i)
+        filename = "step_{}-rank_new{}.txt".format(step, rank_i)
         x_rank, y_rank, z_rank, cc0_rank = np.loadtxt(
             os.path.join(path, filename), unpack=True, usecols=(0, 1, 2, 3)
         )
