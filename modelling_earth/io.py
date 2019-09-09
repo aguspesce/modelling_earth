@@ -332,3 +332,41 @@ def _read_md3d_single_swarm(path, step, time, n_rank):
     data = {"x": x, "y": y, "z": z, "cc0": cc0, "time": time}
     df = pd.DataFrame(data=data, index=step * np.ones_like(x, dtype=int))
     return df
+
+
+def _read_single_viscosity(path, step, n_rank):
+    """
+    Read real viscosity for a single time step from MD3D output files
+
+    Parameters
+    ----------
+    path : str
+        Path to the folder where the MD3D output files are located.
+    steps : float
+        Time steps.
+    n_rank : float
+        Number of files in the same time step.
+
+    Returns
+    -------
+    viscosity : tuple
+
+    """
+    # Read parameters
+    parameters = _read_parameters(path)
+    shape = tuple(parameters[i] for i in ("nx", "ny", "nz"))
+    # Create the viscosity array
+    visc = np.zeros(shape)
+        for rank_i in range(n_rank):
+        filename = "visc_{}_{}.txt".format(step, rank_i)
+        i_rank, j_rank, k_rank, visc_rank = np.loadtxt(
+            os.path.join(path, filename), unpack=True)
+        # Copy of the array, cast to a specified type
+        i_rank = i_rank.astype(int)
+        j_rank = j_rank.astype(int)
+        k_rank = k_rank.astype(int)
+        # Accommodate the viscosity values in the nodes
+        visc[i_rank, j_rank, k_rank + 1] = visc_rank
+        # Change the values equal to zero to nan
+        visc[visc==0] = np.nan
+    return visc
