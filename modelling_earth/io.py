@@ -36,6 +36,7 @@ def read_md3d_data(path):
             - Radiogenic heat [W/m^3]
             - Viscosity factor
             - Strain rate [1/s]
+            - Viscosity [Pa s]
     """
     # Read parameters
     parameters = _read_parameters(path)
@@ -47,16 +48,20 @@ def read_md3d_data(path):
     )
     # Get array of times and steps
     steps, times = _read_times(path, parameters["print_step"], parameters["stepMAX"])
-    # Create the coordinates dictionary
-    dims = ("time", "x", "y", "z")
+    # Create the coordinates dictionary containing the coordinates of the nodes, the
+    # coordinates of the center of the finite elements, and the time and step arrays
     coords = {
         "time": times,
         "step": ("time", steps),
         "x": coordinates[0],
         "y": coordinates[1],
         "z": coordinates[2],
+        "x_center": (coordinates[0][1:] + coordinates[0][:-1]) / 2,
+        "y_center": (coordinates[1][1:] + coordinates[1][:-1]) / 2,
+        "z_center": (coordinates[2][1:] + coordinates[2][:-1]) / 2,
     }
     # Create the data_vars dictionary
+    dims = ("time", "x", "y", "z")
     data_vars = {
         scalar: (dims, _read_scalars(path, shape, steps, quantity=scalar))
         for scalar in SCALARS
@@ -66,6 +71,10 @@ def read_md3d_data(path):
     data_vars["velocity_x"] = (dims, velocity_x)
     data_vars["velocity_y"] = (dims, velocity_y)
     data_vars["velocity_z"] = (dims, velocity_z)
+    # Add viscosity values located on the center of the finite elements
+    dims = ("time", "x_center", "y_center", "z_center")
+    viscosity = _read_viscosity(path, steps, parameters)
+    data_vars["viscosity"] = (dims, viscosity)
     # Create dataset
     dataset = xr.Dataset(data_vars, coords=coords, attrs=parameters)
     return dataset
@@ -121,6 +130,7 @@ def _read_parameters(path):
     parameters["density_units"] = "kg/m^3"
     parameters["heat_units"] = "W/m^3"
     parameters["viscosity_factor_units"] = "dimensionless"
+    parameters["viscosity_units"] = "Pa s"
     parameters["strain_rate_units"] = "s^(-1)"
     return parameters
 
@@ -334,39 +344,37 @@ def _read_md3d_single_swarm(path, step, time, n_rank):
     return df
 
 
-def _read_single_viscosity(path, step, n_rank):
+def _read_viscosity(path, steps, parameters):
     """
-    Read real viscosity for a single time step from MD3D output files
-
-    Parameters
-    ----------
-    path : str
-        Path to the folder where the MD3D output files are located.
-    steps : float
-        Time steps.
-    n_rank : float
-        Number of files in the same time step.
-
-    Returns
-    -------
-    viscosity : tuple
-
     """
-    # Read parameters
-    parameters = _read_parameters(path)
-    shape = tuple(parameters[i] for i in ("nx", "ny", "nz"))
-    # Create the viscosity array
-    visc = np.zeros(shape)
-        for rank_i in range(n_rank):
-        filename = "visc_{}_{}.txt".format(step, rank_i)
-        i_rank, j_rank, k_rank, visc_rank = np.loadtxt(
-            os.path.join(path, filename), unpack=True)
-        # Copy of the array, cast to a specified type
-        i_rank = i_rank.astype(int)
-        j_rank = j_rank.astype(int)
-        k_rank = k_rank.astype(int)
-        # Accommodate the viscosity values in the nodes
-        visc[i_rank, j_rank, k_rank + 1] = visc_rank
-        # Change the values equal to zero to nan
-        visc[visc==0] = np.nan
-    return visc
+    # Determine the number of finite element centers per axes as the number of nodes per
+    # axes minus one
+    nx_centers, ny_centers, nz_centers = tuple(
+        parameters[i] - 1 for i in ("nx", "ny", "nz")
+    )
+    # List all viscosity_files
+    viscosity_files = [i for i in os.listdir(path) if "visc_" in i]
+    # Initialize the viscosity array
+    viscosity = np.zeros(
+        (steps.size, nx_centers, ny_centers, nz_centers), dtype=float
+    )
+    # Fill the viscosity array with elements read from the data files
+    for step_index, step in enumerate(steps):
+        # Determine the rank value on the first step and check it for following steps
+        step_files = [i for i in viscosity_files if "visc_{}_".format(step) in i]
+        if step_index == 0:
+            n_rank = len(step_files)
+        else:
+            if len(step_files) != n_rank:
+                raise ValueError(
+                    "Invalid number of ranks '{}' for step '{}'".format(
+                        len(step_files), step
+                    )
+                )
+        # Read rank file for this step and add the viscosity results to viscosity array
+        for rank in range(n_rank):
+            filename = "visc_{}_{}.txt".format(step, rank)
+            i, j, k, visc = np.loadtxt(os.path.join(path, filename), unpack=True)
+            i, j, k = tuple(indices.astype(int) for indices in (i, j, k))
+            viscosity[step_index, i, j, k] = visc
+    return viscosity
