@@ -355,9 +355,7 @@ def _read_viscosity(path, steps, parameters):
     # List all viscosity_files
     viscosity_files = [i for i in os.listdir(path) if "visc_" in i]
     # Initialize the viscosity array
-    viscosity = np.zeros(
-        (steps.size, nx_centers, ny_centers, nz_centers), dtype=float
-    )
+    viscosity = np.zeros((steps.size, nx_centers, ny_centers, nz_centers), dtype=float)
     # Fill the viscosity array with elements read from the data files
     for step_index, step in enumerate(steps):
         # Determine the rank value on the first step and check it for following steps
