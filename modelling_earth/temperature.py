@@ -3,6 +3,7 @@ Functions to create 3D temperature distributions
 """
 import numpy as np
 import xarray as xr
+from warnings import warn
 
 
 def empty_temperature_grid(region, shape):
@@ -29,37 +30,64 @@ def empty_temperature_grid(region, shape):
     z = np.linspace(z_min, z_max, nz)
     coords = [x, y, z]
     dims = ("x", "y", "z")
-    temperatures = xr.DataArray(np.nan * np.ones(shape), coords=coords, dims=dims)
+    temperatures = xr.DataArray(np.zeros(shape), coords=coords, dims=dims)
     return temperatures
 
 
-def litho_astheno_temperatures(temperatures, boundary_depth, lithosphere_gradient=1300):
+def litho_astheno_temperatures(
+    temperatures,
+    lid_depth,
+    surface_temperature=273.0,
+    lid_temperature=1300.0,
+    coeff_thermal_expansion=3.28e-5,
+    specific_heat=1250,
+    gravity_acceleration=9.8,
+):
     """
     Create a temperature distribution for lithosphere and asthenosphere
+
+    Assigns a linear temperature for the lithosphere and an adiabatic temperature on the
+    asthenosphere.
 
     Parameters
     ----------
     temperatures : :class:`xarray.DataArray`
-        Array containing null temperatures. Use :func:`empty_temperature_grid` to create
-        it.
-    boundary_depth : float
-        Depth to the boundary between lithosphere and asthenosphere
-    linear_gradient : float
-        Gradient of linear temperature profile on lithosphere.
-
-    Returns
-    -------
-    temperatures : :class:`xarray.DataArray`
-        Array containing the temperature distribution of lithosphere and asthenosphere.
+        Array containing temperatures. Use :func:`empty_temperature_grid` to
+        create it if you haven't defined one. The new temperature distribution will be
+        added to these values. Temperatures will be computed in K.
+    lid_depth : float or array
+        Depth to the surface boundary between lithosphere and asthenosphere in meters.
+        Must be negative if the depth is bellow the surface.
+    surface_temperature : float (optional)
+        Temperature at the top of the lithosphere in K.
+    lid_temperature : float (optional)
+        Temperature at the LID in K.
+    coeff_thermal_expansion : float (optional)
+        Coefficient of thermal expansion in K^{-1}.
+    specific_heat : float (optional)
+        Specific heat of the asthenosphere in J/K/kg.
+    gravity_acceleration : float (optional)
+        Magnitude of the gravity acceleration in m/s^2
     """
-    linear = temperatures.copy()
-    exponential = temperatures.copy()
-    # Create linear temperature (model for the lithosphere)
-    linear[:] = temperatures.z / boundary_depth * lithosphere_gradient
-    # Create exponential temperature (model for the asthenosphere)
-    exponential[:] = 1262 / np.exp(-10 * 3.28e-5 * temperatures.z * 1000 / 1250)
-    temperatures = xr.where(linear > exponential, exponential, linear)
-    return temperatures
+    if lid_depth > 0:
+        warn(
+            "Passed lid_depth is positive. "
+            + "It must be negative if you want the LID to be bellow the surface."
+        )
+    # Add linear temperature to the lithosphere
+    boolean = {"z": slice(lid_depth, None)}
+    temperatures.loc[boolean] += (
+        lid_temperature - surface_temperature
+    ) / lid_depth * temperatures.loc[boolean].z + surface_temperature
+    # Add exponential temperature for the asthenosphere
+    boolean = {"z": slice(None, lid_depth)}
+    temperatures.loc[boolean] += lid_temperature * np.exp(
+        (-1)
+        * coeff_thermal_expansion
+        * gravity_acceleration
+        / specific_heat
+        * (temperatures.loc[boolean].z - lid_depth)
+    )
 
 
 def add_subducting_slab(
