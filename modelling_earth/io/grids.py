@@ -82,7 +82,7 @@ def read_md3d_data(path, parameters_file=PARAMETERS_FILE, datasets=DATASETS):
     # Create a dictionary containig the scalar data (no velocity nor viscosity)
     data_vars = {
         scalar: (dims, _read_scalars(path, shape, steps, quantity=scalar))
-        for scalar in DATASETS
+        for scalar in datasets
         if scalar in SCALARS_ON_NODES
     }
 
