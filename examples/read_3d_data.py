@@ -9,7 +9,7 @@ import modelling_earth as me
 
 # Get path to the MD3D output directory
 script_path = os.path.dirname(os.path.abspath(__file__))
-md3d_output_path = os.path.join(script_path, "run")
+md3d_output_path = os.path.join(script_path, "data", "data_3d")
 
 # Read the MD3D output files
 dataset = me.read_md3d_data(md3d_output_path)
