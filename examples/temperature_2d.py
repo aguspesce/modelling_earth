@@ -16,7 +16,7 @@ temperature = me.empty_temperature_grid(region, shape)
 # Define the depth to LID boundary
 # Because we are working with a 2D temperature grid, the LID boundary should be defined
 # as a profile, with one depth value per x coordinate point. The profile must be defined
-# as an xarray.DataArray in order to be passed to me.litho_astheno_temperatures()
+# as an xarray.DataArray in order to be passed to me.litho_astheno_temperatures().
 # We can create a xarray.DataArray full of zeros by copying the temperature grid while
 # fixing a single value of z, in order to create a profile, rather than copying the
 # entire grid:
