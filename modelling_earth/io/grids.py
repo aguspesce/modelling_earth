@@ -99,11 +99,17 @@ def read_md3d_data(path, parameters_file=PARAMETERS_FILE, datasets=DATASETS):
 
     # Read viscosity if needed
     if "viscosity" in datasets:
-        dims = ("time", "x_center", "y_center", "z_center")
-        # Add center coordinates of the finite elements to the coords
-        coords["x_center"] = (coordinates[0][1:] + coordinates[0][:-1]) / 2
-        coords["y_center"] = (coordinates[1][1:] + coordinates[1][:-1]) / 2
-        coords["z_center"] = (coordinates[2][1:] + coordinates[2][:-1]) / 2
+        if dimension == 2:
+            dims = ("time", "x_center", "z_center")
+            # Add center coordinates of the finite elements to the coords
+            coords["x_center"] = (coordinates[0][1:] + coordinates[0][:-1]) / 2
+            coords["z_center"] = (coordinates[1][1:] + coordinates[1][:-1]) / 2
+        elif dimension == 3:
+            dims = ("time", "x_center", "y_center", "z_center")
+            # Add center coordinates of the finite elements to the coords
+            coords["x_center"] = (coordinates[0][1:] + coordinates[0][:-1]) / 2
+            coords["y_center"] = (coordinates[1][1:] + coordinates[1][:-1]) / 2
+            coords["z_center"] = (coordinates[2][1:] + coordinates[2][:-1]) / 2
         # Add viscosity values located on the center of the finite elements
         viscosity = _read_viscosity(path, steps, shape)
         data_vars["viscosity"] = (dims, viscosity)
