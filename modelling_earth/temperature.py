@@ -68,9 +68,13 @@ def litho_astheno_temperatures(
         Array containing temperatures. Use :func:`empty_temperature_grid` to
         create it if you haven't defined one. The new temperature distribution will be
         added to these values. Temperatures will be computed in K.
-    lid_depth : float or array
+    lid_depth : float or :class:`xarray.DataArray`
         Depth to the surface boundary between lithosphere and asthenosphere in meters.
-        Must be negative if the depth is bellow the surface.
+        Must be negative if the depth is bellow the surface. It can be a float for
+        setting a constant LID depth or a custom surface (if temperature grid is 3D) or
+        profile (if 2D). The surface and the profile must be passed as
+        a :class:`xarray.DataArray` with ``x`` and ``y`` coordinates for the surface and
+        only the horizontal coordinate for the profile.
     surface_temperature : float (optional)
         Temperature at the top of the lithosphere in K.
     lid_temperature : float (optional)
@@ -82,24 +86,32 @@ def litho_astheno_temperatures(
     gravity_acceleration : float (optional)
         Magnitude of the gravity acceleration in m/s^2
     """
-    if lid_depth > 0:
+    if np.any(lid_depth > 0):
         warn(
-            "Passed lid_depth is positive. "
-            + "It must be negative if you want the LID to be bellow the surface."
+            "Passed lid_depth has positive values. "
+            + "It must be negative in order the LID to be bellow the surface."
         )
+    # Convert lid_depth to xarray.DataArray if it's a float
+    if type(lid_depth) is float or int:
+        lid_depth = xr.full_like(temperatures.sel(z=temperatures.z[0]), lid_depth)
+    # Broadcast lid_depth and z coordinates to the full shape of temperatures and
+    # convert them to numpy arrays
+    _, lid_depth = xr.broadcast(temperatures, lid_depth)
+    _, z = xr.broadcast(temperatures, temperatures.z)
+    lid_depth, z = lid_depth.values, z.values
     # Add linear temperature to the lithosphere
-    boolean = {"z": slice(lid_depth, None)}
-    temperatures.loc[boolean] += (
+    boolean = z > lid_depth
+    temperatures.values[boolean] += (
         lid_temperature - surface_temperature
-    ) / lid_depth * temperatures.loc[boolean].z + surface_temperature
+    ) / lid_depth[boolean] * z[boolean] + surface_temperature
     # Add exponential temperature for the asthenosphere
-    boolean = {"z": slice(None, lid_depth)}
-    temperatures.loc[boolean] += lid_temperature * np.exp(
+    boolean = z <= lid_depth
+    temperatures.values[boolean] += lid_temperature * np.exp(
         (-1)
         * coeff_thermal_expansion
         * gravity_acceleration
         / specific_heat
-        * (temperatures.loc[boolean].z - lid_depth)
+        * (z[boolean] - lid_depth[boolean])
     )
 
 
