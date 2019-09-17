@@ -76,14 +76,13 @@ def plot_swarm_2d(swarm, ax, **kwargs):
     """
     Plot an scatter of the particle position for a defined time step
 
-    Parameter
-    ---------
-    swarm : :class:`pandas.DataFrame`
-        DataFrame containing the particles positions for a specific time step. The
-        positions of the particles are given by ``x``, ``y`` and ``z`` in meters. The
-        ``cc0`` is the number assigned to each particle belonging to a finite element.
-        The ``time`` is given in Ma. The index of the :class:`pandas.DataFrame`
-        correspond to the step number.
+    Parameters
+    ----------
+    swarm : :class:`pandas.Dataset`
+        :class:`pandas.Dataset` containing the particles positions for a specific time
+        step. The positions of the particles are given by ``x``, ``y`` and ``z`` in
+        meters. The ``cc0`` is the number assigned to each particle belonging to
+        a finite element. The ``time`` is given in Ma.
     ax : :class:`matplotlib:Axes`
         Axe where the plot will be added.
     kwargs : dict
