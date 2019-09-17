@@ -1,5 +1,5 @@
 """
-Read MD3D output files and plot temperature and position of the particle.
+Read MD3D output files and plot temperature and position of the particles
 """
 import os
 import modelling_earth as me
@@ -11,8 +11,8 @@ md3d_output_path = os.path.join(script_path, "run")
 
 # Read the particles position
 swarm = me.read_md3d_swarm(md3d_output_path)
-# Reduce the number of particles to take only 2 particle per cell
-swarm = swarm[swarm.cc0 < 2]
+# Reduce the number of particles by taking only 2 particle per cell
+swarm = swarm.where(swarm.cc0 < 2, drop=True)
 
 # Read the MD3D output files
 dataset = me.read_md3d_data(md3d_output_path)
@@ -24,7 +24,7 @@ step = dataset.step.sel(time=time).values
 # Plot
 fig, ax = plt.subplots()
 me.plot_scalar_2d(dataset.temperature.sel(time=time, y=0), ax=ax)
-me.plot_swarm_2d(swarm.loc[step], ax=ax)
+me.plot_swarm_2d(swarm.sel(time=time), ax=ax)
 plt.show()
 
 # Plot all temperatures and particle position for every time and save the figures
