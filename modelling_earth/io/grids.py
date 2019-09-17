@@ -62,11 +62,8 @@ def read_md3d_data(path, parameters_file=PARAMETERS_FILE, datasets=DATASETS):
     # Read parameters
     parameters = _read_parameters(os.path.join(path, parameters_file))
     # Build coordinates
-    shape = tuple(parameters[i] for i in ("nx", "ny", "nz"))
-    coordinates = _build_coordinates(
-        max_coords=tuple(parameters[i] for i in ("x_max", "y_max", "z_max")),
-        shape=shape,
-    )
+    shape = parameters["shape"]
+    coordinates = _build_coordinates(region=parameters["region"], shape=shape)
     # Get array of times and steps
     steps, times = _read_times(path, parameters["print_step"], parameters["stepMAX"])
     # Create the coordinates dictionary containing the coordinates of the nodes
@@ -107,33 +104,47 @@ def read_md3d_data(path, parameters_file=PARAMETERS_FILE, datasets=DATASETS):
     return xr.Dataset(data_vars, coords=coords, attrs=parameters)
 
 
-def _build_coordinates(max_coords, shape):
+def _build_coordinates(region, shape):
     """
     Create grid coordinates
 
     Parameters
     ----------
-    max_coords : tuple
-        Maximum coordinates for each direction in the following order:
-        ``x_max``, ``y_max``, ``z_max`` in meters.
+    region : tuple
+        Boundary coordinates for each direction.
+        If reading 3D data, they must be passed in the following order:
+        ``x_min``, ``x_max``, ``y_min``, ``y_max``, ``z_min``, ``z_max``.
+        If reading 2D data, they must be passed in the following order:
+        ``x_min``, ``x_max``, ``z_min``, ``z_max``.
+        All coordinates should be in meters.
     shape : tuple
-        Number of points for each direction in the following order:
+        Number of points for each direction.
+        If reading 3D data, they must be passed in the following order:
         ``nx``, ``ny``, ``nz``.
+        If reading 2D data, they must be passed in the following order: ``nx``, ``nz``.
 
     Returns
     -------
     coordinates : tuple
-        Tuple containing grid coordinates in the following order: ``x``, ``y``, ``z``.
+        Tuple containing grid coordinates in the following order:
+        ``x``, ``y``, ``z`` if 3D, or ``x``, ``z`` if 2D.
         All coordinates are in meters.
     """
-    x_max, y_max, z_max = max_coords[:]
-    nx, ny, nz = shape[:]
-    # The z axis points downwards and the y axis is inverted to keep a right handed
-    # coordinate system.
-    x = np.linspace(0, x_max, nx)
-    y = np.linspace(-y_max, 0, ny)
-    z = np.linspace(-z_max, 0, nz)
-    return (x, y, z)
+    # Get number of dimensions
+    dimension = len(shape)
+    if dimension == 2:
+        x_min, x_max, z_min, z_max = region[:]
+        nx, nz = shape[:]
+        x = np.linspace(x_min, x_max, nx)
+        z = np.linspace(z_min, z_max, nz)
+        return x, z
+    elif dimension == 3:
+        x_min, x_max, y_min, y_max, z_min, z_max = region[:]
+        nx, ny, nz = shape[:]
+        x = np.linspace(x_min, x_max, nx)
+        y = np.linspace(y_min, y_max, ny)
+        z = np.linspace(z_min, z_max, nz)
+        return x, y, z
 
 
 def _read_scalars(path, shape, steps, quantity):
