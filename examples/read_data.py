@@ -26,7 +26,7 @@ plt.show()
 # Plot the viscosity
 # me.plot_scalar_2d(dataset.viscosity.sel(time=0, y_center=0), ax=ax)
 fig, ax = plt.subplots()
-dataset.viscosity.sel(time=0, y_center=-2000).plot.pcolormesh(
+dataset.viscosity.sel(time=0, y_center=2000).plot.pcolormesh(
     ax=ax, x="x_center", y="z_center", norm=LogNorm()
 )
 ax.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
