@@ -8,28 +8,41 @@ from warnings import warn
 
 def empty_temperature_grid(region, shape):
     """
-    Create an empty 3D temperature grid
+    Create an empty 2D or 3D temperature grid
 
     Parameters
     ----------
     region : tuple or list
-        List containing the boundaries of the region of the grid in the following order:
+        List containing the boundaries of the region of the grid. If the grid is 3D, the
+        boundaries should be passed in the following order:
         ``x_min``, ``x_max``, ``y_min``, ``y_max``,``z_min``, ``z_max``.
+        If the grid is 2D, the boundaries should be passed in the following order:
+        ``x_min``, ``x_max``, ``z_min``, ``z_max``.
     shape : tuple
-        Total number of grid points along each direction: ``n_x``, ``n_y``, ``n_z``.
+        Total number of grid points along each direction.
+        If the grid is 3D, the tuple must be: ``n_x``, ``n_y``, ``n_z``.
+        If the grid is 2D, the tuple must be: ``n_x``, ``n_z``.
 
     Returns
     -------
     temperature : :class:``xarray.DataArray``
         Array containing a grid with empty temperatures along with its coordinates.
     """
-    nx, ny, nz = shape[:]
-    x_min, x_max, y_min, y_max, z_min, z_max = region[:]
-    x = np.linspace(x_min, x_max, nx)
-    y = np.linspace(y_min, y_max, ny)
-    z = np.linspace(z_min, z_max, nz)
-    coords = [x, y, z]
-    dims = ("x", "y", "z")
+    if len(shape) == 2:
+        nx, nz = shape[:]
+        x_min, x_max, z_min, z_max = region[:]
+        x = np.linspace(x_min, x_max, nx)
+        z = np.linspace(z_min, z_max, nz)
+        dims = ("x", "z")
+        coords = {"x": x, "z": z}
+    else:
+        nx, ny, nz = shape[:]
+        x_min, x_max, y_min, y_max, z_min, z_max = region[:]
+        x = np.linspace(x_min, x_max, nx)
+        y = np.linspace(y_min, y_max, ny)
+        z = np.linspace(z_min, z_max, nz)
+        dims = ("x", "y", "z")
+        coords = {"x": x, "y": y, "z": z}
     temperatures = xr.DataArray(np.zeros(shape), coords=coords, dims=dims)
     return temperatures
 
