@@ -1,6 +1,5 @@
 """
-Read MD3D output files and plot the velocity and the temperature data with
-created functions in the repository.
+Read output files from 3D modelling and plot
 """
 import os
 from matplotlib.colors import LogNorm
@@ -9,7 +8,7 @@ import modelling_earth as me
 
 # Get path to the MD3D output directory
 script_path = os.path.dirname(os.path.abspath(__file__))
-md3d_output_path = os.path.join(script_path, "run")
+md3d_output_path = os.path.join(script_path, "data", "data_3d")
 
 # Read the MD3D output files
 dataset = me.read_md3d_data(md3d_output_path)
@@ -26,7 +25,7 @@ plt.show()
 # Plot the viscosity
 # me.plot_scalar_2d(dataset.viscosity.sel(time=0, y_center=0), ax=ax)
 fig, ax = plt.subplots()
-dataset.viscosity.sel(time=0, y_center=-2000).plot.pcolormesh(
+dataset.viscosity.sel(time=0, y_center=2000).plot.pcolormesh(
     ax=ax, x="x_center", y="z_center", norm=LogNorm()
 )
 ax.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))

@@ -32,8 +32,9 @@ def read_md3d_swarm(path, parameters_file=PARAMETERS_FILE):
         is given in Ma. The index of the :class:`pandas.DataFrame` correspond to the
         step number.
     """
-    # Determine the number of time steps
+    # Determine the number of time steps and dimension of data
     parameters = _read_parameters(os.path.join(path, parameters_file))
+    dimension = len(parameters["shape"])
     print_step = parameters["print_step"]
     max_steps = parameters["stepMAX"]
     steps, times = _read_times(path, print_step, max_steps)
@@ -57,28 +58,36 @@ def read_md3d_swarm(path, parameters_file=PARAMETERS_FILE):
                     )
                 )
         # Read particles positions for the current step
-        dataframes.append(_read_md3d_single_swarm(path, step, time, n_rank))
+        dataframes.append(_read_md3d_single_swarm(path, step, time, n_rank, dimension))
     # Concatenate the dataframes
     swarm = pd.concat(dataframes)
     return swarm
 
 
-def _read_md3d_single_swarm(path, step, time, n_rank):
+def _read_md3d_single_swarm(path, step, time, n_rank, dimension):
     """
     Read swarm positions for a single time step from MD3D output files
     """
     x, y, z, cc0 = tuple(np.array([]) for i in range(4))
     for rank_i in range(n_rank):
         filename = "{}{}-rank_new{}.txt".format(SWARM_BASENAME, step, rank_i)
-        x_rank, y_rank, z_rank, cc0_rank = np.loadtxt(
-            os.path.join(path, filename), unpack=True, usecols=(0, 1, 2, 3)
-        )
+        if dimension == 2:
+            x_rank, z_rank, cc0_rank = np.loadtxt(
+                os.path.join(path, filename), unpack=True, usecols=(0, 1, 2)
+            )
+        elif dimension == 3:
+            x_rank, y_rank, z_rank, cc0_rank = np.loadtxt(
+                os.path.join(path, filename), unpack=True, usecols=(0, 1, 2, 3)
+            )
         # Stack arrays in sequence horizontally
         cc0 = np.hstack((cc0, cc0_rank))
         x = np.hstack((x, x_rank))
-        y = np.hstack((y, y_rank))
         z = np.hstack((z, z_rank))
+        if dimension == 3:
+            y = np.hstack((y, y_rank))
     # Create a data frame for the current step
-    data = {"x": x, "y": y, "z": z, "cc0": cc0, "time": time}
-    df = pd.DataFrame(data=data, index=step * np.ones_like(x, dtype=int))
+    data = {"x": x, "z": z, "cc0": cc0, "time": time}
+    if dimension == 3:
+        data["y"] = y
+    df = pd.DataFrame(data=data, index=np.full_like(x, step, dtype=int))
     return df

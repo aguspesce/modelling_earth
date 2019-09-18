@@ -12,6 +12,13 @@ def _read_parameters(parameters_file):
     """
     Read parameters file
 
+    .. warning :
+
+        The parameters file contains the length of the region along each axe. While
+        creating the region, we are assuming that the z axe points upwards and therefore
+        all values beneath the surface are negative, and the x and y axes are all
+        positive within the region.
+
     Parameters
     ----------
     parameters_file : str
@@ -23,25 +30,25 @@ def _read_parameters(parameters_file):
         Dictionary containing the parameters of MD3D output files.
     """
     parameters = {}
-    read_n_coords, read_max_coords = False, False
+    read_shape, read_max_coords = False, False
     with open(parameters_file, "r") as params_file:
         for line in params_file:
             # Skip blank lines
             if not line.strip():
                 continue
             # Read number of coordinates per direction
-            if not read_n_coords:
-                parameters["nx"], parameters["ny"], parameters["nz"] = tuple(
-                    int(i) for i in line.split()
-                )
-                read_n_coords = True
+            if not read_shape:
+                parameters["shape"] = tuple(int(i) for i in line.split())
+                read_shape = True
+                # Determine the dimension of the data
+                dimension = len(parameters["shape"])
                 continue
             # Read maximum coordinates per direction
             if not read_max_coords:
-                parameters["x_max"], parameters["y_max"], parameters["z_max"] = tuple(
-                    float(i) for i in line.split()
-                )
+                max_coords = tuple(float(i) for i in line.split())
                 read_max_coords = True
+                # Assert that the dimension matches the one read in shape
+                assert len(max_coords) == dimension
                 continue
             # Read more parameters
             key, value = line.split()
@@ -51,6 +58,16 @@ def _read_parameters(parameters_file):
                 parameters[key] = float(value)
             else:
                 parameters[key] = value
+    # Add region to parameters according to the dimension
+    parameters["dimension"] = dimension
+    if dimension == 2:
+        x_max, z_max = max_coords[:]
+        parameters["region"] = (0, x_max, -z_max, 0)
+    elif dimension == 3:
+        x_max, y_max, z_max = max_coords[:]
+        parameters["region"] = (0, x_max, 0, y_max, -z_max, 0)
+    else:
+        raise ValueError("Invalid dimension: {}".format(dimension))
     # Add units
     parameters["coords_units"] = "m"
     parameters["times_units"] = "Ma"
