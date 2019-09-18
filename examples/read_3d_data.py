@@ -1,6 +1,5 @@
 """
-Read MD3D output files and plot the velocity and the temperature data with
-created functions in the repository.
+Read output files from 3D modelling and plot
 """
 import os
 from matplotlib.colors import LogNorm
