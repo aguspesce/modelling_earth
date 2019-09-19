@@ -7,16 +7,24 @@ from warnings import warn
 
 from .coordinates import initialize_array
 
+# Define default parameters for building temperature distributions
+SURFACE_TEMPERATURE = 273.0
+LID_TEMPERATURE = 1300.0
+POTENTIAL_ASTHENO_SURFACE_TEMP = 1262.0
+COEFF_THERMAL_EXPANSION = 3.28e-5
+SPECIFIC_HEAT = 1250
+GRAVITY_ACCELERATION = 9.8
+
 
 def litho_astheno_temperatures(
     coordinates,
     lid_depth,
-    surface_temperature=273.0,
-    lid_temperature=1300.0,
-    potential_astheno_surface_temp=1262.0,
-    coeff_thermal_expansion=3.28e-5,
-    specific_heat=1250,
-    gravity_acceleration=9.8,
+    surface_temperature=SURFACE_TEMPERATURE,
+    lid_temperature=LID_TEMPERATURE,
+    potential_astheno_surface_temp=POTENTIAL_ASTHENO_SURFACE_TEMP,
+    coeff_thermal_expansion=COEFF_THERMAL_EXPANSION,
+    specific_heat=SPECIFIC_HEAT,
+    gravity_acceleration=GRAVITY_ACCELERATION,
 ):
     """
     Create a temperature distribution for lithosphere and asthenosphere
@@ -94,20 +102,35 @@ def litho_astheno_temperatures(
     return temperatures
 
 
-def add_subducting_slab(
-    temperatures, xmin, xmax, slope, thickness, lithosphere_gradient=1300
+def subducting_slab_temperature(
+    temperatures,
+    slope,
+    thickness,
+    h_min,
+    h_max,
+    top_temperature=SURFACE_TEMPERATURE,
+    bottom_temperature=LID_TEMPERATURE,
+    direction="x",
 ):
     """
-    Add temperature of a subducting slab to a temperature grid
+    Create temperature distribution for a subducting slab
+
+    Parameters
+    ----------
     """
-    top = np.tan(np.radians(slope)) * (temperatures.x - xmin)
+    # Compute top and bottom boundaries of the slab
+    top = -np.tan(np.radians(slope)) * (temperatures[direction] - h_min)
     bottom = top - thickness
-    temperatures_with_slab = xr.where(
-        (temperatures.coords["x"] < xmax)
-        & (temperatures.coords["x"] > xmin)
-        & (temperatures.coords["z"] < top)
-        & (temperatures.coords["z"] > bottom),
-        (temperatures + lithosphere_gradient * (temperatures.z - top) / 100.0) / 2,
+    # Broadcast top array
+    _, top = xr.broadcast(temperatures, top)
+    _, z = xr.broadcast(temperatures, temperatures.z)
+    temperatures = xr.where(
+        (temperatures.z < top)
+        & (temperatures.z > bottom)
+        & (temperatures[direction] > h_min)
+        & (temperatures[direction] < h_max),
+        (bottom_temperature - top_temperature) * (top - z) / thickness
+        + top_temperature,
         temperatures,
     )
-    return temperatures_with_slab
+    return temperatures
