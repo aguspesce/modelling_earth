@@ -28,10 +28,7 @@ lid[lid.x >= 500e3] = -300e3
 
 # Create a temperature distribution for a lithosphere and an asthenosphere passing the
 # custom LID boundary
-temperature = me.litho_astheno_temperatures(
-    coordinates,
-    lid_depth=lid,
-)
+temperature = me.litho_astheno_temperatures(coordinates, lid_depth=lid)
 
 # Plot temperature distribution
 temperature.sel(y=0).plot.pcolormesh(x="x", y="z")
