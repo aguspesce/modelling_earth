@@ -75,16 +75,17 @@ def litho_astheno_temperatures(
     # Convert lid_depth to xarray.DataArray if it's a float
     if type(lid_depth) is float or int:
         lid_depth = xr.full_like(temperatures.sel(z=temperatures.z[0]), lid_depth)
-    # Broadcast lid_depth and z coordinates to the full shape of temperatures
-    _, lid_depth = xr.broadcast(temperatures, lid_depth)
-    _, z = xr.broadcast(temperatures, temperatures.z)
     # Compute temperature distribution for lithosphere (linear)
     temperatures += (
         lid_temperature - surface_temperature
-    ) / lid_depth * z + surface_temperature
+    ) / lid_depth * temperatures.z + surface_temperature
     # Add exponential temperature for the asthenosphere
     astheno_temperatures = potential_astheno_surface_temp * np.exp(
-        (-1) * coeff_thermal_expansion * gravity_acceleration / specific_heat * z
+        (-1)
+        * coeff_thermal_expansion
+        * gravity_acceleration
+        / specific_heat
+        * temperatures.z
     )
     # Merge both distributions ensuring continuity
     temperatures = xr.where(
