@@ -50,13 +50,24 @@ def grid_coordinates(region, shape):
     return da.coords
 
 
-def initialize_array(coordinates):
+def initialize_array(coordinates, fill_value=0):
     """
     Create an empty array for a set of coordinates
+
+    Parameters
+    ----------
+    coordinates : :class:`xarray.DataArrayCoordinates`
+        Coordinates located on a regular grid where the temperature distribution will be
+        created. Must be in meters and can be either 2D or 3D.
+    fill_value : float (optional) or None
+        Value that will fill the initialized array. If None, the array will be filled
+        with ``numpy.nan``s. Default to 0.
     """
     # Get shape of coordinates
     shape = _get_shape(coordinates)
-    return xr.DataArray(np.zeros(shape), coords=coordinates)
+    if fill_value is None:
+        fill_value = np.nan
+    return xr.DataArray(fill_value * np.ones(shape), coords=coordinates)
 
 
 def _get_shape(coordinates):
