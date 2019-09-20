@@ -117,6 +117,30 @@ def subducting_slab_temperature(
 
     Parameters
     ----------
+    temperatures : :class:`xarray.DataArray`
+        Array containing a temperature distribution.
+    slope : float
+        Slope of the subducting slab in degrees. A positive value creates a subducting
+        slab whose top is located at ``h_min`` and its bottom on ``h_max``.
+    thickness : float
+        Thickness of the subducting slab in meters (must be always positive).
+    h_min, h_max : float, float
+        Minimum and maximum horizontal coordinates at which the subducting slab extends.
+        The direction of the subduction is controlled by the ``direction`` argument.
+    top_temperature : float (optional)
+        Temperature at the surface of the subducting slab.
+    bottom_temperature : float (optional)
+        Temperature at the bottom of the subducting slab.
+    direction : string (optional)
+        Direction of the subduction. If working in 3D it can be either *"x"* or *"y"*.
+        When working in 2D, it must be *"x"*.
+
+    Returns
+    -------
+    temperatures : :class:`xarray.DataArray`
+        Array containing the temperature distribution for the subducting slab on top of
+        the passed ``temperatures`` distribution. Only the points inside the subducting
+        slab have been overwritten.
     """
     if thickness < 0:
         raise ValueError(
