@@ -118,6 +118,10 @@ def subducting_slab_temperature(
     Parameters
     ----------
     """
+    if thickness < 0:
+        raise ValueError(
+            "Invalid thickness '{}': it must be always positive.".format(thickness)
+        )
     # Compute top and bottom boundaries of the slab
     top = -np.tan(np.radians(slope)) * (temperatures[direction] - h_min)
     bottom = top - thickness
