@@ -121,15 +121,13 @@ def subducting_slab_temperature(
     # Compute top and bottom boundaries of the slab
     top = -np.tan(np.radians(slope)) * (temperatures[direction] - h_min)
     bottom = top - thickness
-    # Broadcast top array
-    _, top = xr.broadcast(temperatures, top)
-    _, z = xr.broadcast(temperatures, temperatures.z)
+    # Modify temperature values only inside the subducting slab
     temperatures = xr.where(
-        (temperatures.z < top)
-        & (temperatures.z > bottom)
-        & (temperatures[direction] > h_min)
-        & (temperatures[direction] < h_max),
-        (bottom_temperature - top_temperature) * (top - z) / thickness
+        (temperatures[direction] > h_min)
+        & (temperatures[direction] < h_max)
+        & (temperatures.z < top)
+        & (temperatures.z > bottom),
+        (bottom_temperature - top_temperature) * (top - temperatures.z) / thickness
         + top_temperature,
         temperatures,
     )
