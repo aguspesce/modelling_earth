@@ -39,7 +39,7 @@ def interfaces(vertices, coordinates, names=None):
         raise ValueError(
             "The number of elements in interfaces names "
             + "('{}') and interfaces ('{}') must be equal".format(
-                len(names), len(interfaces)
+                len(names), len(vertices)
             )
         )
     dims = "x"
