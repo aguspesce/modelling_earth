@@ -34,7 +34,15 @@ def interfaces(vertices, coordinates, names=None):
                 len(coordinates.dims)
             )
         )
-    dims = ("x")
+    # Check if the number of items in interfaces name is equal to interfaces
+    if len(names) != len(vertices):
+        raise ValueError(
+            "The number of elements in interfaces names "
+            + "('{}') and interfaces ('{}') must be equal".format(
+                len(names), len(interfaces)
+            )
+        )
+    dims = "x"
     data_vars = {}
     x_min, x_max = coordinates["x"].min(), coordinates["x"].max()
     for i, nodes in enumerate(vertices):
@@ -57,9 +65,7 @@ def _check_boundary_vertices(vertices, x_min, x_max):
     x = vertices[:, 0]
     if not np.allclose(x_min, x.min()) or not np.allclose(x_max, x.max()):
         raise ValueError(
-            "Invalid vertices for creating the interfaces: {}. ".format(
-                vertices
-            )
+            "Invalid vertices for creating the interfaces: {}. ".format(vertices)
             + "Remember to include boundary nodes that matches the coordinates "
             + "boundaries '{}.'".format((x_min, x_max))
         )
