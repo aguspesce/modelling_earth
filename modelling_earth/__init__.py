@@ -6,7 +6,7 @@ from .temperature import subducting_slab_temperature, litho_astheno_temperatures
 from .io.grids import read_md3d_data
 from .io.swarm import read_md3d_swarm
 from .plot import plot_velocity_2d, plot_scalar_2d, save_plots_2d, plot_swarm_2d
-
+from .interfaces import interfaces
 
 # Get the version number through versioneer
 __version__ = get_versions()["version"]
