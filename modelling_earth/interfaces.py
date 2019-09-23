@@ -5,7 +5,7 @@ import numpy as np
 import xarray as xr
 
 
-def interfaces(vertices, coordinates):
+def interfaces(vertices, coordinates, names=None):
     """
     Create a set of interfaces by interpolating their vertices
 
@@ -17,6 +17,10 @@ def interfaces(vertices, coordinates):
         List of vertices for each interface.
     coordinates : :class:`xarray.DataArrayCoordinates`
         Two dimensional coordinates located on a regular grid.
+    names : list or None
+        List that contains the name of each interface in the same order that `vertices`.
+        If None the name will be named automatically set by using the number of each
+        interface. Default None.
 
     Returns
     -------
@@ -37,7 +41,12 @@ def interfaces(vertices, coordinates):
         nodes = np.array(nodes)
         _check_boundary_vertices(nodes, x_min, x_max)
         interface = np.interp(coordinates["x"], nodes[:, 0], nodes[:, 1])
-        data_vars["interface_{}".format(i)] = (dims, interface)
+        # Define the name of each interface
+        if names:
+            name = names[i]
+        else:
+            name = "interface_{}".format(i)
+        data_vars[name] = (dims, interface)
     return xr.Dataset(data_vars, coords={"x": coordinates["x"]})
 
 

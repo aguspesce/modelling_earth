@@ -7,12 +7,14 @@ shape = (251, 81)
 coordinates = me.grid_coordinates(region, shape)
 
 vertices = [
-    [[0, -150e3], [500e3, -100e3], [1000e3, -100e3], [2000e3, -120e3]],
-    [[0, -300e3], [500e3, -450e3], [1000e3, -450e3], [2000e3, -500e3]],
+    [[0, -100e3], [500e3, -100e3], [1000e3, -150e3], [2000e3, -150e3]],
+    [[0, -20e3], [500e3, -20e3], [1000e3, -45e3], [2000e3, -45e3]],
 ]
+names = ["lab", "crust"]
 
-interfaces = me.interfaces(vertices, coordinates)
+interfaces = me.interfaces(vertices, coordinates, names)
 print(interfaces)
 
-interfaces.interface_0.plot()
+interfaces.crust.plot()
+interfaces.lab.plot()
 plt.show()
