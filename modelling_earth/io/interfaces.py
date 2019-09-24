@@ -16,7 +16,7 @@ FLAGS = {
 FNAME = "interface_creep.txt"
 
 
-def save_interfaces(interfaces, layers_parameters, path):
+def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
     """
     Save the interface and the layer parameter as ASCII file
 
