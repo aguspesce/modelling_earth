@@ -26,7 +26,7 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
         Dataset with the interfaces depth.
     layers_parameters : dict
         Dictionary with the parameters values for each layer.
-        The parameters are:
+        The needed parameters are:
             - ``viscosity factor``
             - ``density``
             - ``radiogenic_heat``
