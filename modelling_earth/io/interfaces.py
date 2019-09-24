@@ -44,15 +44,15 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
     # interfaces plus one
     _check_length_interfaces(interfaces, layers_parameters)
     # Generate the header with the layers parameters
-    header = ""
-    for i, parameter in enumerate(layers_parameters):
-        if i != 0:
-            header += "\n"
-        header += (
-            FLAGS[parameter]
-            + " "
-            + " ".join(list(str(i) for i in layers_parameters[parameter]))
+    header = []
+    for parameter in layers_parameters:
+        header.append(
+            " ".join(
+                list(FLAGS[parameter])
+                + list(str(i) for i in layers_parameters[parameter])
+            )
         )
+    header = "\n".join(header)
     # Stack the interfaces from the dataset
     stacked_interfaces = np.hstack(
         list(interfaces[i].values[:, np.newaxis] for i in interfaces)
