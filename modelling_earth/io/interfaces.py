@@ -71,5 +71,5 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
     )
     # Save the interface and the layers parameters
     np.savetxt(
-        os.path.join(path, FNAME), stacked_interfaces, header=header, comments=""
+        os.path.join(path, fname), stacked_interfaces, header=header, comments=""
     )
