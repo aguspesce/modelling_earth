@@ -25,7 +25,7 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
     interfaces : :class:`xarray.Dataset`
         Dataset with the interfaces depth.
     layers_parameters : dict
-        Dictionary with the parameters values for each layer:
+        Dictionary with the parameters values for each layer.
         The parameters are:
             - ``viscosity factor``
             - ``density``
