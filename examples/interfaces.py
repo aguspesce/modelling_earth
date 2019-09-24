@@ -52,5 +52,5 @@ layers = {
     "activation_volume": [15e-6, 15e-6, 25e-6],
 }
 
-# SAve the interfaces in a ASCII file
+# Save the interfaces to an ASCII file
 me.save_interfaces(interfaces, layers, md3d_input_path)
