@@ -4,9 +4,10 @@ Save temperature distributions to ASCII files to be read by MD3D
 import numpy as np
 
 HEADER = "T1 \n T2 \n T3 \n T4"
+FNAME = "Temper_0_3D.txt"
 
 
-def save_temperature(temperatures, fname):
+def save_temperature(temperatures, path, fname=FNAME):
     """
     Save temperatures grid as ASCII file ready to be read by MD3D
 
@@ -18,8 +19,10 @@ def save_temperature(temperatures, fname):
     ----------
     temperatures : :class:`xarray.DataArray`
         Array containing a temperature distribution. Can be either 2D or 3D.
-    fname :
-       Filename of the output ASCII file.
+    path : str
+        Path to save the temperature file.
+    fname : str (optional)
+       Filename of the output ASCII file. Deault to ``Temper_0_3D.txt``.
     """
     # Check if temperatures is 2D or 3D
     dimension = len(temperatures.dims)
