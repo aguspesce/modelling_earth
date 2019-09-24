@@ -39,22 +39,10 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
 
     """
     # Check that the length of each parameter in layers_parameters are the same
-    size = len(layers_parameters["density"])
-    for parameter in layers_parameters:
-        if len(layers_parameters[parameter]) != size:
-            raise ValueError(
-                "Invalid number of elements layer parameters. "
-                + "All layer parameters must have the same number of elements."
-            )
+    _check_length_parameters(layers_parameters)
     # Check that the length of the parameters is equal to the length of
     # interfaces plus one
-    if size != len(interfaces) + 1:
-        raise ValueError(
-            "Invalid number of layers ({}) for given interfaces ({}). ".format(
-                size, len(interfaces)
-            )
-            + "The number of layers must be one more than the number of interfaces."
-        )
+    _check_length_interfaces(interfaces, layers_parameters)
     # Generate the header with the layers parameters
     header = ""
     for i, parameter in enumerate(layers_parameters):
@@ -73,3 +61,30 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
     np.savetxt(
         os.path.join(path, fname), stacked_interfaces, header=header, comments=""
     )
+
+
+def _check_length_parameters(layers_parameters):
+    """
+    Check that the length of each parameter in layers_parameters are the same
+    """
+    sizes = list(len(i) for i in list(layers_parameters.values()))
+    if not np.allclose(sizes[0], sizes):
+        raise ValueError(
+            "Invalid number of elements layer parameters. "
+            + "All layer parameters must have the same number of elements."
+        )
+
+
+def _check_length_interfaces(interfaces, layers_parameters):
+    """
+    Check that the length of the parameters is equal to the length of interfaces
+    plus one
+    """
+    size = len(list(layers_parameters.values())[0])
+    if not np.allclose(size, len(interfaces) + 1):
+        raise ValueError(
+            "Invalid number of layers ({}) for given interfaces ({}). ".format(
+                size, len(interfaces)
+            )
+            + "The number of layers must be one more than the number of interfaces."
+        )
