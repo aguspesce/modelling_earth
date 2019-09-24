@@ -36,7 +36,8 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
             - ``activation_volume``
     path : str
         Path to save the file.
-
+    fname : str (optional)
+        Name to save the interface file. Default ``interface_creep.txt``
     """
     # Check that the length of each parameter in layers_parameters are the same
     _check_length_parameters(layers_parameters)
