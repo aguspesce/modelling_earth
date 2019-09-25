@@ -1,6 +1,7 @@
 """
 Save temperature distributions to ASCII files to be read by MD3D
 """
+import os
 import numpy as np
 
 HEADER = "T1 \n T2 \n T3 \n T4"
@@ -45,4 +46,6 @@ def save_temperature(temperatures, path, fname=FNAME):
     # We will use order "F" on numpy.ravel in order to make the first index to change
     # faster than the rest
     # Will add a custom header required by MD3D
-    np.savetxt(fname, temperatures.values.ravel(order="F"), header=HEADER)
+    np.savetxt(
+        os.path.join(path, fname), temperatures.values.ravel(order="F"), header=HEADER
+    )
