@@ -50,10 +50,9 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
     header = []
     for parameter in layers_parameters:
         header.append(
-            " ".join(
-                list(FLAGS[parameter])
-                + list(str(i) for i in layers_parameters[parameter])
-            )
+            FLAGS[parameter]
+            + " "
+            + " ".join(list(str(i) for i in layers_parameters[parameter]))
         )
     header = "\n".join(header)
     # Stack the interfaces from the dataset
@@ -62,7 +61,11 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
     )
     # Save the interface and the layers parameters
     np.savetxt(
-        os.path.join(path, fname), stacked_interfaces, header=header, comments=""
+        os.path.join(path, fname),
+        stacked_interfaces,
+        fmt="%f",
+        header=header,
+        comments="",
     )
 
 
