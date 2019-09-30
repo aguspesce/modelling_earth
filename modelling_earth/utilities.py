@@ -21,7 +21,7 @@ def linear_depth(x, slope, point):
         Value in the ``x`` axis where the linear function will be evaluated
         to determine its value in the ``z`` axis.
     slope : float
-        Slope of the linear function in degrees. A positive slop value make that the
+        Slope of the linear function in degrees. A positive value for the slope value makes the
         depth increase with the value of ``x``.
     point : tuple
         Coordinate of any point  that belongs to the linear function in the following order: (``x``, ``z``).
