@@ -15,7 +15,6 @@ def linear_depth(x, slope, point):
     .. math::
         z(x) = - \tan(\alpha) (x - x_p) + z_p
 
-
     Parameters
     ----------
     x : float or array
