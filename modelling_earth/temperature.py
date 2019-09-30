@@ -5,7 +5,7 @@ import numpy as np
 import xarray as xr
 from warnings import warn
 
-from .coordinates import initialize_array
+from .coordinates import create_grid
 
 # Define default parameters for building temperature distributions
 SURFACE_TEMPERATURE = 273.0
@@ -79,7 +79,7 @@ def litho_astheno_temperatures(
             + "It must be negative in order the LID to be bellow the surface."
         )
     # Initialize temperatures array
-    temperatures = initialize_array(coordinates)
+    temperatures = create_grid(coordinates)
     # Convert lid_depth to xarray.DataArray if it's a float
     if type(lid_depth) is float or int:
         lid_depth = xr.full_like(temperatures.sel(z=temperatures.z[0]), lid_depth)

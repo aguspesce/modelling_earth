@@ -50,7 +50,7 @@ def grid_coordinates(region, shape):
     return da.coords
 
 
-def initialize_array(coordinates, fill_value=0):
+def create_grid(coordinates, fill_value=0):
     """
     Create an empty array for a set of coordinates
 

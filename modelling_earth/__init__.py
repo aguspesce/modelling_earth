@@ -1,7 +1,7 @@
 # pylint: disable=missing-docstring
 # Import functions/classes to make the public API
 from ._version import get_versions
-from .coordinates import grid_coordinates, initialize_array
+from .coordinates import grid_coordinates, create_grid
 from .temperature import subducting_slab_temperature, litho_astheno_temperatures
 from .io.grids import read_md3d_data
 from .io.swarm import read_md3d_swarm
