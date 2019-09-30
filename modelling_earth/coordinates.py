@@ -64,13 +64,13 @@ def initialize_array(coordinates, fill_value=0):
         with ``numpy.nan``s. Default to 0.
     """
     # Get shape of coordinates
-    shape = _get_shape(coordinates)
+    shape = get_shape(coordinates)
     if fill_value is None:
         fill_value = np.nan
     return xr.DataArray(fill_value * np.ones(shape), coords=coordinates)
 
 
-def _get_shape(coordinates):
+def get_shape(coordinates):
     """
     Return shape of coordinates
 

@@ -1,8 +1,44 @@
 """
-Function to create interfaces using interpolation function
+Function to create and merge interfaces
 """
 import numpy as np
 import xarray as xr
+
+from .coordinates import get_shape
+
+
+def create_interface(coordinates, fill_value=0):
+    """
+    Create an empty array to model a 2D or 3D interface
+
+    The interface will be defined on horizontal coordinates, therefore its values will
+    be the depth to the interface.
+
+    Parameters
+    ----------
+    coordinates : :class:`xarray.DataArrayCoordinates`
+        Coordinates located on a regular grid that will be used to create the interface.
+        Must be in meters and can be either 2D or 3D. If they are in 2D, the interface
+        will be a curve, and if the coordinates are 3D, the interface will be a surface.
+    fill_value : float (optional) or None
+        Value that will fill the initialized array. If None, the array will be filled
+        with ``numpy.nan``s. Default to 0.
+
+    Returns
+    -------
+    da : :class:`xarray.DataArray`
+        Array containing the interface filled with the same value.
+    """
+    # Get shape of coordinates
+    shape = get_shape(coordinates)
+    if fill_value is None:
+        fill_value = np.nan
+    # Remove the shape on z
+    shape = shape[:-1]
+    return xr.DataArray(
+        fill_value * np.ones(shape),
+        coords=[coordinates[i] for i in coordinates if i != "z"],
+    )
 
 
 def interfaces(vertices, coordinates, names=None):
