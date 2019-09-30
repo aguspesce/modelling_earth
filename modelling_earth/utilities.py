@@ -59,7 +59,7 @@ def quadratic_depth(x, point_1, point_2):
     point_1 : tuple
         Point where the values in the ``x`` and ``z`` axes are known.
     point_2 : tuple
-        Point where the values in the ``x`` and ``z`` axises are known.
+        Point where the values in the ``x`` and ``z`` axes are known.
 
     Returns
     -------
