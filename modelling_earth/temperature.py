@@ -6,6 +6,7 @@ import xarray as xr
 from warnings import warn
 
 from .coordinates import create_grid
+from .utilities import linear_depth
 
 # Define default parameters for building temperature distributions
 SURFACE_TEMPERATURE = 273.0
@@ -147,7 +148,7 @@ def subducting_slab_temperature(
             "Invalid thickness '{}': it must be always positive.".format(thickness)
         )
     # Compute top and bottom boundaries of the slab
-    top = -np.tan(np.radians(slope)) * (temperatures[direction] - h_min)
+    top = linear_depth(temperatures[direction], slope, (h_min, 0))
     bottom = top - thickness
     # Modify temperature values only inside the subducting slab
     temperatures = xr.where(
