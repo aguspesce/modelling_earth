@@ -38,7 +38,7 @@ def linear_depth(x, slope, point):
 def quadratic_depth(x, point_1, point_2):
     """
     Evaluate a quadratic function for a given value ``x``. The parameters to define the
-    function are determined through the coordinates of two point (:math: (x_1, z_1)
+    function are determined through the coordinates of two points (:math: (x_1, z_1)
     and :math: (x_2, z_2)).
 
     .. math ::
