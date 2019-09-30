@@ -26,9 +26,7 @@ lid += -300e3
 temperature = me.litho_astheno_temperatures(coordinates, lid_depth=lid)
 
 # Create one interface from its vertices
-vertices = [
-    [0, -20e3], [500e3, -20e3], [1000e3, -45e3], [2000e3, -45e3],
-]
+vertices = [[0, -20e3], [500e3, -20e3], [1000e3, -45e3], [2000e3, -45e3]]
 crust = me.interface_from_vertices(vertices, coordinates)
 
 # Merge all interfaces
