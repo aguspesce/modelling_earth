@@ -13,7 +13,7 @@ FLAGS = {
     "activation_energy": "Q",
     "activation_volume": "V",
 }
-FNAME = "interface_creep.txt"
+FNAME = "interfaces_creep.txt"
 
 
 def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
