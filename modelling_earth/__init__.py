@@ -9,6 +9,7 @@ from .io.temperature import save_temperature
 from .plot import plot_velocity_2d, plot_scalar_2d, save_plots_2d, plot_swarm_2d
 from .io.interfaces import save_interfaces
 from .interfaces import interfaces
+from .utilities import linear_depth, quadratic_depth
 
 # Get the version number through versioneer
 __version__ = get_versions()["version"]
