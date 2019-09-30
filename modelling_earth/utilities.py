@@ -57,7 +57,7 @@ def quadratic_depth(x, point_1, point_2):
         Value in the ``x`` axis where the quadratic function will be evaluated
         to determine its value in the ``z`` axis.
     point_1 : tuple
-        Point where the values in the ``x`` and ``z`` axises are known.
+        Point where the values in the ``x`` and ``z`` axes are known.
     point_2 : tuple
         Point where the values in the ``x`` and ``z`` axises are known.
 
