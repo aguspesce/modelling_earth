@@ -8,12 +8,12 @@ import numpy as np
 def lineal_depth(x, slope, point):
     r"""
     Evaluate a lineal function for a given value ``x``. The parameters to define the
-    function are determined through the slope (:math: \alpha) and values in a given
-    point :math: (x_p, z_p).
+    function are determined through the slope (:math:`\alpha`) and values in a given
+    point :math:`(x_p, z_p)`.
     The lineal function is:
 
     .. math::
-        z(x) = \tan(\alpha) * x + (z_p - \tan(\alpha) * x_p)
+        z(x) = - \tan(\alpha) (x - x_p) + z_p
 
 
     Parameters
@@ -22,7 +22,8 @@ def lineal_depth(x, slope, point):
         Value in the ``x`` axis where the linear function will be evaluated
         to determine its value in the ``z`` axis.
     slope : float
-        Slope of the lineal function in degrees.
+        Slope of the lineal function in degrees. A positive slop value make that the
+        depth increase with the value of ``x``.
     point : tuple
         Point where the values in the ``x`` and ``z`` axises are known.
 
@@ -31,27 +32,25 @@ def lineal_depth(x, slope, point):
     z : float or array
         Value in the ``z`` axis obtained from evaluating the linear function.
     """
-    a = -np.tan(np.radians(slope))
-    b = point[1] - a * point[0]
-    z = a * x + b
-    return z
+    x_p, z_p = point[:]
+    return -np.tan(np.radians(slope)) * (x - x_p) + z_p
 
 
-def quadratic_function(x, point_1, point_2):
+def quadratic_depth(x, point_1, point_2):
     """
     Evaluate a quadratic function for a given value ``x``. The parameters to define the
     function are determined through the coordinates of two point (:math: (x_1, z_1)
     and :math: (x_2, z_2)).
 
     .. math ::
-        z(x) = - a * x^2 + b
+        z(x) = - a x^2 + b
 
     where,
 
     .. math::
          a = (z_2 - z_1) / (x_2^2 - x_1^2)
 
-         b = z_1[1] - a * x_1^2
+         b = z_1 - a x_1^2
 
     Parameters
     ----------
@@ -68,7 +67,8 @@ def quadratic_function(x, point_1, point_2):
     z : float
         Value in the ``z`` axis obtained from evaluating the quadratic function.
     """
-    a = (point_2[1] - point_1[1]) / (point_2[0] ** 2 - point_1[0] ** 2)
-    b = point_1[1] - a * point_1[0] ** 2
-    z = a * x ** 2 + b
-    return z
+    x_1, z_1 = point_1[:]
+    x_2, z_2 = point_2[:]
+    a = (z_2 - z_1) / (x_2 ** 2 - x_1 ** 2)
+    b = z_1 - a * x_1 ** 2
+    return a * x ** 2 + b
