@@ -5,7 +5,7 @@ import numpy as np
 import xarray as xr
 from warnings import warn
 
-from .utilities import lineal_depth
+from .utilities import linear_depth
 from .coordinates import initialize_array
 
 # Define default parameters for building temperature distributions
@@ -148,7 +148,7 @@ def subducting_slab_temperature(
             "Invalid thickness '{}': it must be always positive.".format(thickness)
         )
     # Compute top and bottom boundaries of the slab
-    top = lineal_depth(temperatures[direction], slope, (h_min, 0))
+    top = linear_depth(temperatures[direction], slope, (h_min, 0))
     bottom = top - thickness
     # Modify temperature values only inside the subducting slab
     temperatures = xr.where(

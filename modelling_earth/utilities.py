@@ -5,12 +5,12 @@ Utilities functions to create the interfaces
 import numpy as np
 
 
-def lineal_depth(x, slope, point):
+def linear_depth(x, slope, point):
     r"""
-    Evaluate a lineal function for a given value ``x``. The parameters to define the
+    Evaluate a linear function for a given value ``x``. The parameters to define the
     function are determined through the slope (:math:`\alpha`) and values in a given
     point :math:`(x_p, z_p)`.
-    The lineal function is:
+    The linear function is:
 
     .. math::
         z(x) = - \tan(\alpha) (x - x_p) + z_p
@@ -22,7 +22,7 @@ def lineal_depth(x, slope, point):
         Value in the ``x`` axis where the linear function will be evaluated
         to determine its value in the ``z`` axis.
     slope : float
-        Slope of the lineal function in degrees. A positive slop value make that the
+        Slope of the linear function in degrees. A positive slop value make that the
         depth increase with the value of ``x``.
     point : tuple
         Point where the values in the ``x`` and ``z`` axises are known.
