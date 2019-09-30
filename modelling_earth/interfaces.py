@@ -41,6 +41,29 @@ def create_interface(coordinates, fill_value=0):
     )
 
 
+def merge_interfaces(interfaces):
+    """
+    Merge a dictionary of interfaces into a single xarray.Dataset
+
+    Parameters
+    ----------
+    interfaces : dict
+        Dictionary containing a collection of interfaces.
+
+    Returns
+    -------
+    ds : :class:`xarray.Dataset`
+        Dataset containing the interfaces.
+    """
+    ds = None
+    for name, interface in interfaces.items():
+        if ds:
+            ds[name] = interface
+        else:
+            ds = interfaces[name].to_dataset(name=name)
+    return ds
+
+
 def interface_from_vertices(vertices, coordinates):
     """
     Create an interface by interpolating its vertices
