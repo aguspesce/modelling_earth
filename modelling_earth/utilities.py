@@ -1,15 +1,15 @@
 """
-Utilities functions to create the interfaces and the temperature for a subduction zone
+Utilities functions to create the interfaces
 """
 
 import numpy as np
 
 
-def z_from_lineal_function(slope, point, x):
+def lineal_depth(x, slope, point):
     r"""
-    Calculate the value (:math: z(x)) in the ``z`` axis from a given value (:math: x)
-    in the ``x`` axis for a linear function using the slope (:math: \alpha) and values
-    in a given point :math: (x_p, z_p).
+    Evaluate a lineal function for a given value ``x``. The parameters to define the
+    function are determined through the slope (:math: \alpha) and values in a given
+    point :math: (x_p, z_p).
     The lineal function is:
 
     .. math::
@@ -18,17 +18,17 @@ def z_from_lineal_function(slope, point, x):
 
     Parameters
     ----------
+    x : float or array
+        Value in the ``x`` axis where the linear function will be evaluated
+        to determine its value in the ``z`` axis.
     slope : float
         Slope of the lineal function in degrees.
     point : tuple
         Point where the values in the ``x`` and ``z`` axises are known.
-    x : float
-        Value in the ``x`` axis where the linear function will be evaluated
-        to determine its value in the ``z`` axis.
 
-    Return
-    ------
-    z : float
+    Returns
+    -------
+    z : float or array
         Value in the ``z`` axis obtained from evaluating the linear function.
     """
     a = -np.tan(np.radians(slope))
@@ -37,44 +37,11 @@ def z_from_lineal_function(slope, point, x):
     return z
 
 
-def x_from_lineal_function(slope, point, z):
-    r"""
-    Calculate the value (:math: x) in the ``x`` axis from a given value (:math: z)
-    in the ``z`` axis for a linear function using the slope (:math: \alpha) and values
-    in a given point :math: (x_p, z_p).
-    The lineal function is:
-
-    .. math::
-        z = \tan(\alpha) * x + (z_p - \tan(\alpha) * x_p)
-
-    Therefore the value of :math: x for a given value of :math: z is:
-
-    .. math ::
-        x = (z - z_p + \tan(\alpha) * x_p) / \tan(\alpha)
-
-    Parameters
-    ----------
-    slope : float
-        Slope of the lineal function in degrees.
-    point : tuple
-        Point where the values in the ``x`` and ``z`` axises are known.
-    z : float
-        Value in the ``z`` axis to determine its associated value in the ``z`` axis.
-
-    Return
-    ------
-    x : float
-        Value in the ``x`` axis.
+def quadratic_function(x, point_1, point_2):
     """
-    a = -np.tan(np.radians(slope))
-    x = (z - point[1] + a * point[0]) / a
-    return x
-
-
-def quadratic_function(point_1, point_2, x):
-    """
-    Evaluate a quadratic function (:math: z(x)). The function is created through the
-    coordinates of two point (:math: (x_1, z_1) and :math: (x_2, z_2)).
+    Evaluate a quadratic function for a given value ``x``. The parameters to define the
+    function are determined through the coordinates of two point (:math: (x_1, z_1)
+    and :math: (x_2, z_2)).
 
     .. math ::
         z(x) = - a * x^2 + b
@@ -88,16 +55,16 @@ def quadratic_function(point_1, point_2, x):
 
     Parameters
     ----------
+    x : float
+        Value in the ``x`` axis where the quadratic function will be evaluated
+        to determine its value in the ``z`` axis.
     point_1 : tuple
         Point where the values in the ``x`` and ``z`` axises are known.
     point_2 : tuple
         Point where the values in the ``x`` and ``z`` axises are known.
-    x : float
-        Value in the ``x`` axis where the quadratic function will be evaluated
-        to determine its value in the ``z`` axis.
 
-    Return
-    ------
+    Returns
+    -------
     z : float
         Value in the ``z`` axis obtained from evaluating the quadratic function.
     """
