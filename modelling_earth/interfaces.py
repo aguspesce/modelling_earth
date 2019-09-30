@@ -41,27 +41,23 @@ def create_interface(coordinates, fill_value=0):
     )
 
 
-def interfaces(vertices, coordinates, names=None):
+def interface_from_vertices(vertices, coordinates):
     """
-    Create a set of interfaces by interpolating their vertices
+    Create an interface by interpolating its vertices
 
     It works only for building interfaces in 2D as profiles.
 
     Parameters
     ----------
     vertices : list
-        List of vertices for each interface.
+        List of vertices of the interface.
     coordinates : :class:`xarray.DataArrayCoordinates`
         Two dimensional coordinates located on a regular grid.
-    names : list or None
-        List that contains the name of each interface in the same order that `vertices`.
-        If None the name will be named automatically set by using the number of each
-        interface. Default None.
 
     Returns
     -------
-    interfaces : :class:`xarray.Dataset`
-        Dataset with the interfaces depth
+    interface : :class:`xarray.DataArray`
+        Array containing the interface.
     """
     # Check if the coordinates are 2D
     if len(coordinates.dims) != 2:
@@ -70,28 +66,12 @@ def interfaces(vertices, coordinates, names=None):
                 len(coordinates.dims)
             )
         )
-    # Check if the number of items in interfaces name is equal to interfaces
-    if len(names) != len(vertices):
-        raise ValueError(
-            "The number of elements in interfaces names "
-            + "('{}') and interfaces ('{}') must be equal".format(
-                len(names), len(vertices)
-            )
-        )
     dims = "x"
-    data_vars = {}
-    x_min, x_max = coordinates["x"].min(), coordinates["x"].max()
-    for i, nodes in enumerate(vertices):
-        nodes = np.array(nodes)
-        _check_boundary_vertices(nodes, x_min, x_max)
-        interface = np.interp(coordinates["x"], nodes[:, 0], nodes[:, 1])
-        # Define the name of each interface
-        if names:
-            name = names[i]
-        else:
-            name = "interface_{}".format(i)
-        data_vars[name] = (dims, interface)
-    return xr.Dataset(data_vars, coords={"x": coordinates["x"]})
+    x_min, x_max = coordinates[dims].min(), coordinates[dims].max()
+    vertices = np.array(vertices)
+    _check_boundary_vertices(vertices, x_min, x_max)
+    interface = np.interp(coordinates[dims], vertices[:, 0], vertices[:, 1])
+    return xr.DataArray(interface, coords=[coordinates[dims]], dims=dims)
 
 
 def _check_boundary_vertices(vertices, x_min, x_max):
