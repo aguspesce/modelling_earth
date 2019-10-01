@@ -20,18 +20,17 @@ shape = (251, 81)
 # Create an empty coordinates grid
 coordinates = me.grid_coordinates(region, shape)
 
-# Create a temperature distribution
-lid = me.initialize_array(coordinates).sel(z=coordinates["z"][0])
+# Create the lid and a temperature distribution
+lid = me.create_interface(coordinates)
 lid += -300e3
 temperature = me.litho_astheno_temperatures(coordinates, lid_depth=lid)
 
-# Create the interfaces vertices
-vertices = [
-    [[0, -300e3], [2000e3, -300e3]],
-    [[0, -20e3], [500e3, -20e3], [1000e3, -45e3], [2000e3, -45e3]],
-]
-names = ["lid", "crust"]
-interfaces = me.interfaces(vertices, coordinates, names)
+# Create one interface from its vertices
+vertices = [[0, -20e3], [500e3, -20e3], [1000e3, -45e3], [2000e3, -45e3]]
+crust = me.interface_from_vertices(vertices, coordinates)
+
+# Merge all interfaces
+interfaces = me.merge_interfaces({"crust": crust, "lid": lid})
 
 # Plot temperature distribution
 temperature.plot.pcolormesh(x="x", y="z")

@@ -12,4 +12,4 @@ dist/
 *.egg-info
 MANIFEST
 .coverage.*
-examples/_figures
+examples/_*
