@@ -72,11 +72,3 @@ def quadratic_depth(x, point_1, point_2):
     a = (z_2 - z_1) / (x_2 ** 2 - x_1 ** 2)
     b = z_1 - a * x_1 ** 2
     return a * x ** 2 + b
-
-
-def change_unit(value):
-    """
-    Change the unit of the velocity from cm/years to m/s
-    """
-    value_change = value * 0.01 / (365 * 24 * 3600)
-    return value_change
