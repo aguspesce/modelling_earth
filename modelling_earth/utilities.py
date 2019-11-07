@@ -21,10 +21,11 @@ def linear_depth(x, slope, point):
         Value in the ``x`` axis where the linear function will be evaluated
         to determine its value in the ``z`` axis.
     slope : float
-        Slope of the linear function in degrees. A positive value for the slope value makes the
-        depth to increase with ``x``.
+        Slope of the linear function in degrees. A positive value for the slope value
+        makes the depth to increase with ``x``.
     point : tuple
-        Coordinate of any point  that belongs to the linear function in the following order: (``x``, ``z``).
+        Coordinate of any point  that belongs to the linear function in the following
+        order: (``x``, ``z``).
 
     Returns
     -------
@@ -71,3 +72,11 @@ def quadratic_depth(x, point_1, point_2):
     a = (z_2 - z_1) / (x_2 ** 2 - x_1 ** 2)
     b = z_1 - a * x_1 ** 2
     return a * x ** 2 + b
+
+
+def change_unit(value):
+    """
+    Change the unit of the velocity from cm/years to m/s
+    """
+    value_change = value * 0.01 / (365 * 24 * 3600)
+    return value_change
