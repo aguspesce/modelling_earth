@@ -16,19 +16,21 @@ coordinates = me.grid_coordinates(region, shape)
 # velocity = 0 for z > -300 km and for -660 < z < -300 km assume a linear increase of
 # velocity until the bottom of the model.
 z_start = -300e3
-velocity_start_x, velocity_start_z = 0, 0
-velocity_bottom_x, velocity_bottom_z = 0.03, 0
+velocity_bottom_x, velocity_bottom_z = 3, 0
 
-velocity = me.linear_velocity_2d(
+velocity = me.linear_velocity(
     coordinates,
     z_start,
-    (velocity_start_x, velocity_start_z),
     (velocity_bottom_x, velocity_bottom_z),
 )
+print(velocity.velocity_x.values.min(), velocity.velocity_x.values.max())
+print(velocity.velocity_x.loc[velocity.x==velocity.x.values.max()])
 
 # Plot
 fig, ax = plt.subplots()
-me.plot_velocity_2d(velocity ax=ax, slice_grid=(4, 3))
+
+me.plot_velocity_2d(velocity, ax=ax, slice_grid=(4, 3))
 ax.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
 ax.set_aspect("equal")
+#ax.set_xlim(0, 5000e3)
 plt.show()
