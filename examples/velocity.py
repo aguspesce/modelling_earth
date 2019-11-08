@@ -32,7 +32,7 @@ velocity = me.linear_velocity(
 # Plot
 fig, ax = plt.subplots()
 scale = 2 * np.abs(velocity.velocity_x.values).max()
-me.plot_velocity_2d(velocity, ax=ax, slice_grid=(4, 3), scale=scale)
+me.plot_velocity_2d(velocity, ax=ax, slice_grid=None, scale=scale)
 ax.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
 ax.set_aspect("equal")
 plt.show()
