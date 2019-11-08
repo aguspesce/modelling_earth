@@ -1,6 +1,7 @@
 """
 Create a 2D initial velocity model
 """
+import numpy as np
 import modelling_earth as me
 import matplotlib.pyplot as plt
 import os
@@ -30,7 +31,8 @@ velocity = me.linear_velocity(
 
 # Plot
 fig, ax = plt.subplots()
-me.plot_velocity_2d(velocity, ax=ax, slice_grid=(4, 3))
+scale = 2 * np.abs(velocity.velocity_x.values).max()
+me.plot_velocity_2d(velocity, ax=ax, slice_grid=(4, 3), scale=scale)
 ax.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
 ax.set_aspect("equal")
 plt.show()
