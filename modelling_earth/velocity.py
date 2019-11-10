@@ -6,11 +6,12 @@ import numpy as np
 import xarray as xr
 
 
-def linear_velocity(coordinates, z_start, velocity, direction="x"):
+def linear_velocity(coordinates, z_start, velocity_bottom, direction="x"):
     """
-    The horizontal velocity will be zero above the z_start and will linearly increase
-    bellow that depth until the bottom of the grid. The velocity distribution will be
-    defined on both lateral boundaries.
+    Hotizontal velocity distribution along a define direction.
+    The velocity will be zero above the z_start and will linearly increase bellow that
+    depth until the bottom of the grid. The velocity distribution will be defined on
+    both lateral boundaries.
 
     Parameters
     ----------
@@ -19,7 +20,7 @@ def linear_velocity(coordinates, z_start, velocity, direction="x"):
         created. Must be in meters and can be either 2D or 3D.
     z_start : float
         Depth value where the velocity condition changes in meters.
-    velocity : float
+    velocity_bottom : float
         Velocity at bottom boundary (z_min) on the x and z axes in m/s.
     direction : string (optional)
         Direction of the subduction. If working in 3D it can be either *"x"* or *"y"*.
@@ -30,63 +31,36 @@ def linear_velocity(coordinates, z_start, velocity, direction="x"):
     velocity : :class:`xarray.Dataset`
         Dataset containing the velocity distribution.
     """
-    # Check if coordinates is 2D or 3D
-    dimension = len(coordinates.dims)
-    if dimension == 3:
-        expected_dims = ("x", "y", "z")
-    elif dimension == 2:
-        expected_dims = ("x", "z")
-    else:
-        raise ValueError(
-            "Invalid coordinates with dimension {}: ".format(dimension)
-            + "must be either 2 or 3."
-        )
-    # Check if velocity_bottom dims are in the correct order
-    if len(velocity_bottom) != dimension:
-        raise ValueError(
-            "Invalid velocity_bottom dimensions '{}': ".format(len(velocity_bottom))
-            + "must be '{}' for {}D.".format(expected_dims, dimension)
-        )
+    # Check if coordinates is 2D or 3D and if velocity dims are corrected
+    dimension, expected_dims = _check_velocity(coordinates, velocity_bottom)
     # Define the shape of the coordinates
-    if dimension == 3:
-        shape = (
-            coordinates["x"].shape[0],
-            coordinates["y"].shape[0],
-            coordinates["z"].shape[0],
-        )
-    if dimension == 2:
-        shape = (coordinates["x"].shape[0], coordinates["z"].shape[0])
+    shape = tuple(coordinates[i].size for i in expected_dims)
     # Initialize the velocity dataset with zero values
     velocity = xr.Dataset(coords=coordinates)
-    velocity["velocity_x"] = (coordinates, np.zeros(shape))
-    velocity["velocity_z"] = (coordinates, np.zeros(shape))
-    if dimension == 3:
-        velocity["velocity_y"] = (coordinates, np.zeros(shape))
-    # Calculate the velocity assume a linear increase with depth and add increasing
-    # velocity values on the first and last column using a condition
+    for i in expected_dims:
+        velocity["velocity_{}".format(i)] = (coordinates, np.zeros(shape))
+
+    # Calculate the velocity.
+    # Assume a linear increase with depth where where the velocity is 0 for
+    # coordines.z > z_start and for coordinates.z[0] < z < z_start.
+    # These velocity values must be added on the first and last column.
+    # Define the condition to calculate the velocity
     condition = np.logical_and(
         velocity.z < z_start,
         np.logical_or(velocity.x == velocity.x[0], velocity.x == velocity.x[-1]),
     )
-    # Velocity in x axis
-    lin_velocity_x = velocity_bottom[0] * (velocity.z - z_start) / velocity.z[0]
-    velocity["velocity_x"] = velocity.velocity_x.where(~condition, lin_velocity_x)
-    # Velocity in z and y axes
-    if dimension == 2:
-        lin_velocity_z = velocity_bottom[1] * (velocity.z - z_start) / velocity.z[0]
-        velocity["velocity_z"] = velocity.velocity_z.where(~condition, lin_velocity_z)
-    if dimension == 3:
-        lin_velocity_y = velocity_bottom[1] * (velocity.z - z_start) / velocity.z[0]
-        velocity["velocity_y"] = velocity.velocity_z.where(~condition, lin_velocity_y)
-        lin_velocity_z = velocity_bottom[2] * (velocity.z - z_start) / velocity.z[0]
-        velocity["velocity_z"] = velocity.velocity_z.where(~condition, lin_velocity_z)
+    # Calculate the linear increase
+    linear_increase = _linear_velocity_calculation(velocity, z_start, velocity_bottom)
+    # Add the linear increase along thr direction if subduction acording the condition
+    velocity["velocity_{}".format(direction)] = velocity[
+        "velocity_{}".format(direction)
+    ].where(~condition, linear_increase)
     return velocity
 
 
-def _check_velocity(coordinates, velocity):
+def _check_velocity(coordinates, velocity_value):
     """
-    Check if coordinates is 2D or 3D and if the dimensions of the velocity and
-    coordinates are equal.
+    Check if coordinates is 2D or 3D.
     """
     # Check if coordinates is 2D or 3D
     dimension = len(coordinates.dims)
@@ -99,9 +73,12 @@ def _check_velocity(coordinates, velocity):
             "Invalid coordinates with dimension {}: ".format(dimension)
             + "must be either 2 or 3."
         )
-    # Check if velocity dims are in the correct order
-    if len(velocity) != dimension:
-        raise ValueError(
-            "Invalid velocity dimensions '{}': ".format(len(velocity))
-            + "must be '{}' for {}D.".format(expected_dims, dimension)
-        )
+    return dimension, expected_dims
+
+
+def _linear_velocity_calculation(velocity, z_start, velocity_bottom):
+    """
+    Calculation of the velocity assuming a liner increase with depth
+    """
+    lin_velocity = velocity_bottom * (velocity.z - z_start) / velocity.z[0]
+    return lin_velocity
