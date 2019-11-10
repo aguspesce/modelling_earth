@@ -25,9 +25,7 @@ coordinates = me.grid_coordinates(region, shape)
 z_start = -300e3
 velocity_bottom_x, velocity_bottom_z = 3 * 0.01 / (365 * 24 * 3600), 0
 
-velocity = me.linear_velocity(
-    coordinates, z_start, (velocity_bottom_x, velocity_bottom_z)
-)
+velocity = me.linear_velocity(coordinates, z_start, velocity_bottom_x)
 
 # Plot
 fig, ax = plt.subplots()
