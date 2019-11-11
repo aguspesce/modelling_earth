@@ -9,7 +9,7 @@ import xarray as xr
 def linear_velocity(coordinates, z_start, velocity_bottom, direction="x"):
     """
     Hotizontal velocity distribution along a define direction.
-    
+
     The velocity will be zero above the z_start and will linearly increase bellow that
     depth until the bottom of the grid. The velocity distribution will be defined on
     both lateral boundaries.
@@ -48,7 +48,10 @@ def linear_velocity(coordinates, z_start, velocity_bottom, direction="x"):
     # Define the condition to calculate the velocity
     condition = np.logical_and(
         velocity.z < z_start,
-        np.logical_or(velocity.x == velocity.x[0], velocity.x == velocity.x[-1]),
+        np.logical_or(
+            velocity["direction"] == velocity["direction"][0],
+            velocity["direction"] == velocity["direction"][-1],
+        ),
     )
     # Calculate the linear increase
     linear_increase = _linear_velocity_calculation(velocity, z_start, velocity_bottom)
