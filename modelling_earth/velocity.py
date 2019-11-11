@@ -49,8 +49,8 @@ def linear_velocity(coordinates, z_start, velocity_bottom, direction="x"):
     condition = np.logical_and(
         velocity.z < z_start,
         np.logical_or(
-            velocity["direction"] == velocity["direction"][0],
-            velocity["direction"] == velocity["direction"][-1],
+            velocity[direction] == velocity[direction][0],
+            velocity[direction] == velocity[direction][-1],
         ),
     )
     # Calculate the linear increase
