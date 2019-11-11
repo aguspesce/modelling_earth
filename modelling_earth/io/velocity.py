@@ -31,7 +31,7 @@ def save_velocity(velocity, path, fname=FNAME):
     shape = velocity.velocity_x.shape
     if dimension == 3:
         velocity_to_save = np.zeros((dimension, shape[0] * shape[1] * shape[2]))
-        # Revel the velocity component and put them in only file
+        # Ravel the velocity components and save them to a single file
         # We will use order "F" on numpy.ravel in order to make the first index to
         # change faster than the rest
         velocity_to_save[0, :] = velocity.velocity_x.values.ravel(order="F")
