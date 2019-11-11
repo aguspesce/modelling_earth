@@ -60,7 +60,7 @@ def linear_velocity(coordinates, z_start, velocity_bottom, direction="x"):
 
 def _check_velocity(coordinates, velocity_value):
     """
-    Check if coordinates is 2D or 3D.
+    Check if coordinates are 2D or 3D.
     """
     # Check if coordinates is 2D or 3D
     dimension = len(coordinates.dims)
