@@ -51,7 +51,7 @@ def linear_velocity(coordinates, z_start, velocity_bottom, direction="x"):
     )
     # Calculate the linear increase
     linear_increase = _linear_velocity_calculation(velocity, z_start, velocity_bottom)
-    # Add the linear increase along thr direction if subduction acording the condition
+    # Add the linear increase along the direction if subduction according the condition
     velocity["velocity_{}".format(direction)] = velocity[
         "velocity_{}".format(direction)
     ].where(~condition, linear_increase)
