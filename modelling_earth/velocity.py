@@ -9,6 +9,7 @@ import xarray as xr
 def linear_velocity(coordinates, z_start, velocity_bottom, direction="x"):
     """
     Hotizontal velocity distribution along a define direction.
+    
     The velocity will be zero above the z_start and will linearly increase bellow that
     depth until the bottom of the grid. The velocity distribution will be defined on
     both lateral boundaries.
