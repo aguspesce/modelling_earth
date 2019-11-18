@@ -40,12 +40,9 @@ def linear_velocity(coordinates, z_start, velocity_bottom, direction="x"):
     velocity = xr.Dataset(coords=coordinates)
     for i in expected_dims:
         velocity["velocity_{}".format(i)] = (coordinates, np.zeros(shape))
-
-    # Calculate the velocity.
-    # Assume a linear increase with depth where where the velocity is 0 for
-    # coordines.z > z_start and for coordinates.z[0] < z < z_start.
-    # These velocity values must be added on the first and last column.
-    # Define the condition to calculate the velocity
+    # Calculate the velocity, which must be added on the first and last column.
+    linear_increase = _linear_velocity_calculation(velocity, z_start, velocity_bottom)
+    # Add the velocity along the fixed direction according the coondition
     condition = np.logical_and(
         velocity.z < z_start,
         np.logical_or(
@@ -53,9 +50,6 @@ def linear_velocity(coordinates, z_start, velocity_bottom, direction="x"):
             velocity[direction] == velocity[direction][-1],
         ),
     )
-    # Calculate the linear increase
-    linear_increase = _linear_velocity_calculation(velocity, z_start, velocity_bottom)
-    # Add the linear increase along the direction if subduction according the condition
     velocity["velocity_{}".format(direction)] = velocity[
         "velocity_{}".format(direction)
     ].where(~condition, linear_increase)
@@ -83,6 +77,8 @@ def _check_velocity(coordinates, velocity_value):
 def _linear_velocity_calculation(velocity, z_start, velocity_bottom):
     """
     Calculation of the velocity assuming a liner increase with depth
+    Assume a linear increase with depth where where the velocity is 0 for
+    coordines.z > z_start and for coordinates.z[0] < z < z_start.
     """
     lin_velocity = velocity_bottom * (velocity.z - z_start) / velocity.z[0]
     return lin_velocity
