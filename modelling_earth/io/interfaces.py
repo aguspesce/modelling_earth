@@ -59,8 +59,9 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
         )
     header = "\n".join(header)
     # Stack the interfaces from the dataset
+    # Ravel in case of interfaces defined in 3D spaces (x must change faster than y)
     stacked_interfaces = np.hstack(
-        list(interfaces[i].values[:, np.newaxis] for i in interfaces)
+        list(interfaces[i].values.ravel()[:, np.newaxis] for i in interfaces)
     )
     # Save the interface and the layers parameters
     np.savetxt(
