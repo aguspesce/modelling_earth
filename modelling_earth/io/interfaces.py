@@ -46,6 +46,9 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
     # Check that the length of the parameters is equal to the length of
     # interfaces plus one
     _check_length_interfaces(interfaces, layers_parameters)
+    # Check if the interfaces are in the correct order inside the xr.Dataset
+    # Deeper ones must be before the shallower ones.
+    _check_order_of_interfaces(interfaces)
     # Generate the header with the layers parameters
     header = []
     for parameter in layers_parameters:
@@ -67,6 +70,22 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
         header=header,
         comments="",
     )
+
+
+def _check_order_of_interfaces(interfaces):
+    """
+    Check if the interfaces are ordered from deep to shallow
+    """
+    inames = tuple(i for i in interfaces)
+    for i in range(len(inames) - 1):
+        if not (interfaces[inames[i + 1]] >= interfaces[inames[i]]).values.all():
+            raise ValueError(
+                "Wrong order of interfaces. "
+                + "Interface {} must be located after {} on the xr.Dataset. ".format(
+                    inames[i], inames[i + 1]
+                )
+                + "Deeper interfaces must be located before shallower ones."
+            )
 
 
 def _check_all_parameters(layers_parameters):
