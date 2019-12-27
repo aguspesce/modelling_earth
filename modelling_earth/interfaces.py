@@ -64,11 +64,11 @@ def merge_interfaces(interfaces):
     return ds
 
 
-def interface_from_vertices(vertices, coordinates):
+def interface_from_vertices(vertices, coordinates, direction="x"):
     """
     Create an interface by interpolating its vertices
 
-    It works only for building interfaces in 2D as profiles.
+    It works only for building interfaces in 2D or 3D from a 2D profiles.
 
     Parameters
     ----------
@@ -76,25 +76,29 @@ def interface_from_vertices(vertices, coordinates):
         List of vertices of the interface.
     coordinates : :class:`xarray.DataArrayCoordinates`
         Two dimensional coordinates located on a regular grid.
+    direction : string (optional)
+        Direction of the subduction. If working in 3D it can be either *"x"* or *"y"*.
+        When working in 2D, it must be *"x"*.
 
     Returns
     -------
     interface : :class:`xarray.DataArray`
         Array containing the interface.
     """
-    # Check if the coordinates are 2D
-    if len(coordinates.dims) != 2:
-        raise ValueError(
-            "Invalid coordinates with dimension '{}': they must be 2D.".format(
-                len(coordinates.dims)
-            )
-        )
-    dims = "x"
-    x_min, x_max = coordinates[dims].min(), coordinates[dims].max()
+    h_min, h_max = coordinates[direction].min(), coordinates[direction].max()
     vertices = np.array(vertices)
-    _check_boundary_vertices(vertices, x_min, x_max)
-    interface = np.interp(coordinates[dims], vertices[:, 0], vertices[:, 1])
-    return xr.DataArray(interface, coords=[coordinates[dims]], dims=dims)
+    _check_boundary_vertices(vertices, h_min, h_max)
+    interface = np.interp(coordinates[direction], vertices[:, 0], vertices[:, 1])
+    da = xr.DataArray(interface, coords=[coordinates[direction]], dims=direction)
+    if len(coordinates.dims) == 3:
+        if direction == "x":
+            missing_dim = "y"
+        elif direction == "y":
+            missing_dim == "x"
+        da = da.expand_dims({missing_dim: coordinates[missing_dim].size})
+        da.coords[missing_dim] = coordinates[missing_dim]
+        da.transpose("x", "y")
+    return da
 
 
 def _check_boundary_vertices(vertices, x_min, x_max):
