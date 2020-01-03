@@ -114,7 +114,15 @@ def subducting_slab_temperature(
     direction="x",
 ):
     """
-    Create temperature distribution for a subducting slab
+    Create temperature distribution for a subducting slab as:
+
+    .. math ::
+
+        0.5 * (
+               T(x, y, z) + (
+                             T_{bottom}(x, y, z) - T_{top}(x, y, z)
+                            ) * (z_{top} - z) / thickness + T_{top}(x, y, z)
+              )
 
     Parameters
     ----------
@@ -156,8 +164,14 @@ def subducting_slab_temperature(
         & (temperatures[direction] < h_max)
         & (temperatures.z < top)
         & (temperatures.z > bottom),
-        (bottom_temperature - top_temperature) * (top - temperatures.z) / thickness
-        + top_temperature,
+        0.5
+        * (
+            temperatures
+            + (bottom_temperature - top_temperature)
+            * (top - temperatures.z)
+            / thickness
+            + top_temperature
+        ),
         temperatures,
     )
     return temperatures
