@@ -174,5 +174,4 @@ def subducting_slab_temperature(
         ),
         temperatures,
     )
-    temperatures = temperatures.transpose("x", "y", "z")
     return temperatures
