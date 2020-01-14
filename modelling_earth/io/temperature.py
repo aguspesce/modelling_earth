@@ -36,12 +36,16 @@ def save_temperature(temperatures, path, fname=FNAME):
             "Invalid temperatures array with dimension {}: ".format(dimension)
             + "must be either 2 or 3."
         )
-    # Check if temperature dims are in the correct order
-    if temperatures.dims != expected_dims:
+    # Check if temperature dims are the right ones
+    invalid_dims = [dim for dim in temperatures.dims if dim not in expected_dims]
+    if invalid_dims:
         raise ValueError(
-            "Invalid temperature dimensions '{}': ".format(temperatures.dims)
+            "Found invalid temperature dimensions '{}': ".format(invalid_dims)
             + "must be '{}' for {}D temperatures.".format(expected_dims, dimension)
         )
+    # Change order of temperature dimensions to ("x", "y", "z") or ("x", "z") to ensure
+    # right order of elements when the array is ravelled
+    temperatures = temperatures.transpose(*expected_dims)
     # Ravel and save temperatures
     # We will use order "F" on numpy.ravel in order to make the first index to change
     # faster than the rest

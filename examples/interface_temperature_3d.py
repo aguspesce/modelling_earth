@@ -53,3 +53,6 @@ layers = {
 
 # Save the interfaces to an ASCII file
 me.save_interfaces(interfaces, layers, md3d_input_path)
+
+# Save temperatures to an ASCII file
+me.save_temperature(temperature, md3d_input_path)
