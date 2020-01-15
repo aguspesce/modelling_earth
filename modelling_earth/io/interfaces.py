@@ -58,10 +58,19 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
             + " ".join(list(str(i) for i in layers_parameters[parameter]))
         )
     header = "\n".join(header)
-    # Stack the interfaces from the dataset
-    # Ravel in case of interfaces defined in 3D spaces (x must change faster than y)
+    # Change order of temperature dimensions to ("x", "y", "z") or ("x", "z") to ensure
+    # right order of elements when the array is ravelled
+    dimension = len(interfaces.dims)
+    if dimension == 2:
+        expected_dims = ("x", "y")
+    else:
+        expected_dims = ("x")
+    interfaces = interfaces.transpose(*expected_dims)
+    # Stack and ravel the interfaces from the dataset
+    # We will use order "F" on numpy.ravel in order to make the first index to change
+    # faster than the rest
     stacked_interfaces = np.hstack(
-        list(interfaces[i].values.ravel()[:, np.newaxis] for i in interfaces)
+        list(interfaces[i].values.ravel(order="F")[:, np.newaxis] for i in interfaces)
     )
     # Save the interface and the layers parameters
     np.savetxt(
