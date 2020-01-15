@@ -97,7 +97,7 @@ def interface_from_vertices(vertices, coordinates, direction="x"):
             missing_dim == "x"
         da = da.expand_dims({missing_dim: coordinates[missing_dim].size})
         da.coords[missing_dim] = coordinates[missing_dim]
-        da.transpose("x", "y")
+        da = da.transpose("x", "y")
     return da
 
 
