@@ -21,8 +21,9 @@ shape = (251, 81)
 coordinates = me.grid_coordinates(region, shape)
 
 # Create the lid and a temperature distribution
-lid = me.create_interface(coordinates)
-lid += -300e3
+vertices = [[0, -100e3], [500e3, -100e3], [1000e3, -200e3], [2000e3, -200e3]]
+lid = me.interface_from_vertices(vertices, coordinates)
+
 temperature = me.litho_astheno_temperatures(coordinates, lid_depth=lid)
 
 # Create one interface from its vertices
@@ -30,8 +31,8 @@ vertices = [[0, -20e3], [500e3, -20e3], [1000e3, -45e3], [2000e3, -45e3]]
 crust = me.interface_from_vertices(vertices, coordinates)
 
 # Merge all interfaces
-interfaces = me.merge_interfaces({"crust": crust, "lid": lid})
-
+interfaces = me.merge_interfaces({"lid": lid, "crust": crust})
+print(interfaces)
 # Plot temperature distribution
 temperature.plot.pcolormesh(x="x", y="z")
 plt.gca().set_aspect("equal")
