@@ -64,7 +64,7 @@ def save_interfaces(interfaces, layers_parameters, path, fname=FNAME):
     if dimension == 2:
         expected_dims = ("x", "y")
     else:
-        expected_dims = ("x")
+        expected_dims = "x"
     interfaces = interfaces.transpose(*expected_dims)
     # Stack and ravel the interfaces from the dataset
     # We will use order "F" on numpy.ravel in order to make the first index to change
