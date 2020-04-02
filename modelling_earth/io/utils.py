@@ -5,7 +5,7 @@ import os
 import numpy as np
 
 TIMES_BASENAME = "Tempo_"
-PARAMETERS_FILE = "param_1.5.3.txt"
+PARAMETERS_FILE = "param_1.5.3_2D.txt"
 
 
 def _read_parameters(parameters_file):
@@ -107,8 +107,8 @@ def _read_times(path, print_step, max_steps):
         filename = os.path.join(path, "{}{}.txt".format(TIMES_BASENAME, step))
         if not os.path.isfile(filename):
             break
-        with open(filename, "r") as f:
-            time = float(f.readline().split()[1])
+        time = np.loadtxt(filename, unpack=True, delimiter=":", usecols=(1))
+        time = time[0]
         steps.append(step)
         times.append(time)
     # Transforms lists to arrays
