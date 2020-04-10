@@ -58,14 +58,17 @@ def _read_parameters(parameters_file):
                 parameters[key] = float(value)
             else:
                 parameters[key] = value
-    # Add region to parameters according to the dimension
+    # Add extrime values for the axis according to the dimension
     parameters["dimension"] = dimension
     if dimension == 2:
-        x_max, z_max = max_coords[:]
-        parameters["region"] = (0, x_max, -z_max, 0)
+        x_max, depth = max_coords[:]
+        parameters["x_length"] = x_max
+        parameters["z_depth"] = -depth
     elif dimension == 3:
-        x_max, y_max, z_max = max_coords[:]
-        parameters["region"] = (0, x_max, 0, y_max, -z_max, 0)
+        x_max, y_max, depth = max_coords[:]
+        parameters["x_length"] = x_max
+        parameters["y_length"] = y_max
+        parameters["z_depth"] = -depth
     else:
         raise ValueError("Invalid dimension: {}".format(dimension))
     # Add units
@@ -108,7 +111,6 @@ def _read_times(path, print_step, max_steps):
         if not os.path.isfile(filename):
             break
         time = np.loadtxt(filename, unpack=True, delimiter=":", usecols=(1))
-        time = time[0]
         steps.append(step)
         times.append(time)
     # Transforms lists to arrays
