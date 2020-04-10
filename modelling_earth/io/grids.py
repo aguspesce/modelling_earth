@@ -6,7 +6,11 @@ import numpy as np
 import xarray as xr
 import pandas as pd
 
-from .utils import _read_parameters, _read_times, PARAMETERS_FILE
+from .utils import (
+    _read_parameters,
+    _read_times,
+    PARAMETERS_FILE,
+)
 
 BASENAMES = {
     "temperature": "Temper",
@@ -31,7 +35,9 @@ DATASETS = (
 SCALARS_ON_NODES = DATASETS[:5]
 
 
-def read_md3d_data(path, parameters_file=PARAMETERS_FILE, datasets=DATASETS):
+def read_md3d_data(
+    path, input_region, parameters_file=PARAMETERS_FILE, datasets=DATASETS
+):
     """
     Read the MD3D output files
 
@@ -39,6 +45,8 @@ def read_md3d_data(path, parameters_file=PARAMETERS_FILE, datasets=DATASETS):
     ----------
     path : str
         Path to the folder where the MD3D output files are located.
+    input_region :
+        Region of the model: (xmin, xmax, ymin, ymax, zmin, zmax)
     parameters_file : str (optional)
         Name of the parameters file. It must be located inside the ``path`` directory.
         Default to ``"param_1.5.3.txt"``.
@@ -61,9 +69,23 @@ def read_md3d_data(path, parameters_file=PARAMETERS_FILE, datasets=DATASETS):
     """
     # Read parameters
     parameters = _read_parameters(os.path.join(path, parameters_file))
+    # Check and difine the region
+    if parameters["dimension"] == 2:
+        values = (parameters["x_length"], parameters["z_depth"])
+        region = _check_region(input_region, values)
+    elif parameters["dimension"] == 3:
+        values = (parameters["x_length"], parameters["y_length"], parameters["z_depth"])
+        region = _check_region(input_region, values)
+    else:
+        raise ValueError(
+            "The input region dimention isn't mach wiht "
+            + "the dimension in the parameter file"
+        )
+    # Add region in the parameters
+    parameters["region"] = region
     # Build coordinates
     shape = parameters["shape"]
-    coordinates = _build_coordinates(region=parameters["region"], shape=shape)
+    coordinates = _build_coordinates(region=region, shape=shape)
     # Get array of times and steps
     steps, times = _read_times(path, parameters["print_step"], parameters["stepMAX"])
     # Create the coordinates dictionary containing the coordinates of the nodes
@@ -115,6 +137,38 @@ def read_md3d_data(path, parameters_file=PARAMETERS_FILE, datasets=DATASETS):
         data_vars["viscosity"] = (dims, viscosity)
 
     return xr.Dataset(data_vars, coords=coords, attrs=parameters)
+
+
+def _check_region(input_region, values):
+    """
+    Check that the input region are coherent with the information
+    in the parameter file
+    """
+    if len(values) == 2:
+        xmin, xmax, zmin, zmax = input_region[:]
+        x_length, z_depth = values[:]
+        if (xmax, zmin) == (x_length, z_depth):
+            region = input_region
+        else:
+            raise ValueError(
+                "x_length ({}) or z_depth ({}) ".format(x_length, z_depth)
+                + "don't match with xmax or zmin "
+                + "from the input region {}".format(input_region)
+            )
+    elif len(values) == 3:
+        xmin, xmax, ymin, ymax, zmin, zmax = input_region[:]
+        x_length, y_length, z_depth = values[:]
+        if (xmax, ymin, zmin) == (x_length, y_length, z_depth):
+            region = input_region
+        else:
+            raise ValueError(
+                "x_length ({}), y_length or z_depth ({}) ".format(
+                    x_length, y_length, z_depth
+                )
+                + "don't match with xmax, ymax or zmin "
+                + "from the input region {}".format(input_region)
+            )
+    return region
 
 
 def _build_coordinates(region, shape):
