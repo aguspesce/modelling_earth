@@ -111,8 +111,13 @@ def _read_times(path, print_step, max_steps):
         if not os.path.isfile(filename):
             break
         time = np.loadtxt(filename, unpack=True, delimiter=":", usecols=(1))
+        if time.shape == ():
+            time.append(time)
+        else:
+            time = time[0]
+            times.append(time)
         steps.append(step)
-        times.append(time)
+            
     # Transforms lists to arrays
     times = 1e-6 * np.array(times)  # convert time units into Ma
     steps = np.array(steps, dtype=int)
