@@ -61,14 +61,11 @@ def _read_parameters(parameters_file):
     # Add extrime values for the axis according to the dimension
     parameters["dimension"] = dimension
     if dimension == 2:
-        x_max, depth = max_coords[:]
-        parameters["x_length"] = x_max
-        parameters["z_depth"] = -depth
+        x_max, z_max = max_coords[:]
+        parameters["region"] = (0, x_max, -z_max, 0)
     elif dimension == 3:
-        x_max, y_max, depth = max_coords[:]
-        parameters["x_length"] = x_max
-        parameters["y_length"] = y_max
-        parameters["z_depth"] = -depth
+        x_max, y_max, z_max = max_coords[:]
+        parameters["region"] = (0, x_max, 0, y_max, -z_max, 0)
     else:
         raise ValueError("Invalid dimension: {}".format(dimension))
     # Add units
@@ -80,6 +77,7 @@ def _read_parameters(parameters_file):
     parameters["viscosity_factor_units"] = "dimensionless"
     parameters["viscosity_units"] = "Pa s"
     parameters["strain_rate_units"] = "s^(-1)"
+    parameters["pressure_units"] = ""
     return parameters
 
 
@@ -94,7 +92,7 @@ def _read_times(path, print_step, max_steps):
     print_step : int
         Only steps multiple of ``print_step`` are saved by MANDYOC.
     max_steps : int
-        Maximum number of steps. MANDYOC could break computation before the 
+        Maximum number of steps. MANDYOC could break computation before the
 ``max_steps``
         are run if the maximum time is reached. This quantity only bounds the number of
         time files.
@@ -118,7 +116,7 @@ def _read_times(path, print_step, max_steps):
             time = time[0]
             times.append(time)
         steps.append(step)
-            
+
     # Transforms lists to arrays
     times = 1e-6 * np.array(times)  # convert time units into Ma
     steps = np.array(steps, dtype=int)
