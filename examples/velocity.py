@@ -6,11 +6,11 @@ import modelling_earth as me
 import matplotlib.pyplot as plt
 import os
 
-# Get path to the MD3D output directory
+# Get path to the MANDYOC output directory
 script_path = os.path.dirname(os.path.abspath(__file__))
-md3d_input_path = os.path.join(script_path, "_input_data")
-if not os.path.isdir(md3d_input_path):
-    os.mkdir(md3d_input_path)
+mandyoc_input_path = os.path.join(script_path, "_input_data")
+if not os.path.isdir(mandyoc_input_path):
+    os.mkdir(mandyoc_input_path)
 
 # Define a region of study and the number of nodes per axes
 x_min, x_max, z_min, z_max = 0, 2000e3, -660e3, 0
@@ -36,4 +36,4 @@ ax.set_aspect("equal")
 plt.show()
 
 # Save the velocity in ASCII file
-me.save_velocity(velocity, md3d_input_path)
+me.save_velocity(velocity, mandyoc_input_path)

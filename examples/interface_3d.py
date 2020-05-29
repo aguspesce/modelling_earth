@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-# Get path to the MD3D output directory
+# Get path to the MANDYOC output directory
 script_path = os.path.dirname(os.path.abspath(__file__))
-md3d_input_path = os.path.join(script_path, "_input_data")
-if not os.path.isdir(md3d_input_path):
-    os.mkdir(md3d_input_path)
+mandyoc_input_path = os.path.join(script_path, "_input_data")
+if not os.path.isdir(mandyoc_input_path):
+    os.mkdir(mandyoc_input_path)
 
 # Define a region of study and the number of nodes per axes
 region = (0, 2000e3, 0, 80e3, -660e3, 0)
@@ -41,7 +41,7 @@ interfaces.sel(y=0).lid.plot()
 plt.gca().set_aspect("equal")
 plt.show()
 
-# Create layers data to create the layers file for MD3D
+# Create layers data to create the layers file for MANDYOC
 layers = {
     "viscosity_factor": [5, 100, 1000],
     "density": [3300, 3000, 2900],
@@ -53,7 +53,7 @@ layers = {
 }
 
 # Save the interfaces to an ASCII file
-me.save_interfaces(interfaces, layers, md3d_input_path)
+me.save_interfaces(interfaces, layers, mandyoc_input_path)
 
 # Save temperatures to an ASCII file
-me.save_temperature(temperature, md3d_input_path)
+me.save_temperature(temperature, mandyoc_input_path)

@@ -1,5 +1,5 @@
 """
-Save interfaces and layers data to ASCII files ready to be read by MD3D
+Save interfaces and layers data to ASCII files ready to be read by MANDYOC
 """
 import numpy as np
 import os

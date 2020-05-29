@@ -1,5 +1,5 @@
 """
-Save temperature distributions to ASCII files to be read by MD3D
+Save temperature distributions to ASCII files to be read by MANDYOC
 """
 import os
 import numpy as np
@@ -10,7 +10,7 @@ FNAME = "Temper_0_3D.txt"
 
 def save_temperature(temperatures, path, fname=FNAME):
     """
-    Save temperatures grid as ASCII file ready to be read by MD3D
+    Save temperatures grid as ASCII file ready to be read by MANDYOC
 
     The temperatures grid values are saved on a single column, following each axe on
     in crescent order, with the ``x`` indexes changing faster that the ``y``, and the
@@ -49,7 +49,7 @@ def save_temperature(temperatures, path, fname=FNAME):
     # Ravel and save temperatures
     # We will use order "F" on numpy.ravel in order to make the first index to change
     # faster than the rest
-    # Will add a custom header required by MD3D
+    # Will add a custom header required by MANDYOC
     np.savetxt(
         os.path.join(path, fname), temperatures.values.ravel(order="F"), header=HEADER
     )

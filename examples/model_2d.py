@@ -2,7 +2,7 @@
 Creation of 2D model
 ====================
 
-We want to create a 2D model ready to be passed as initial conditions to MD3D.
+We want to create a 2D model ready to be passed as initial conditions to MANDYOC.
 We will create a temperature distribution for lithosphere and asthenosphere, add
 a subducting slab and a few different interfaces, each one with a different physical
 parameters.

@@ -5,17 +5,17 @@ import os
 import modelling_earth as me
 import matplotlib.pyplot as plt
 
-# Get path to the MD3D output directory
+# Get path to the MANDYOC output directory
 script_path = os.path.dirname(os.path.abspath(__file__))
-md3d_output_path = os.path.join(script_path, "data", "data_2d")
+mandyoc_output_path = os.path.join(script_path, "data", "data_2d")
 
 # Read the particles position
-swarm = me.read_md3d_swarm(md3d_output_path)
+swarm = me.read_mandyoc_swarm(mandyoc_output_path)
 # Reduce the number of particles to take only 2 particle per cell
 swarm = swarm[swarm.cc0 < 2]
 
-# Read the MD3D output files
-dataset = me.read_md3d_data(md3d_output_path, datasets=["temperature"])
+# Read the MANDYOC output files
+dataset = me.read_mandyoc_data(mandyoc_output_path, datasets=["temperature"])
 
 # Plot the particle position over the temperature for a fxed time step
 # Define the time and the step to plot

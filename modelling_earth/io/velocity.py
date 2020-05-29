@@ -1,5 +1,5 @@
 """
-Save velocity distributions to ASCII files to be read by MD3D/MD2D
+Save velocity distributions to ASCII files to be read by MANDYOC
 """
 import os
 import numpy as np
@@ -10,7 +10,7 @@ FNAME = "veloc_0_3D.txt"
 
 def save_velocity(velocity, path, fname=FNAME):
     """
-    Save velocity grid as ASCII file ready to be read by MD3D/MD2D
+    Save velocity grid as ASCII file ready to be read by MANDYOC
 
     The velocity grid values are saved on three column, following each axe on
     in crescent order, with the ``x`` indexes changing faster that the ``y``, and the
@@ -40,5 +40,5 @@ def save_velocity(velocity, path, fname=FNAME):
     for i, component in enumerate(components):
         velocity_to_save[i, :] = component.values.ravel(order="F")
     velocity_to_save = np.reshape(velocity_to_save.T, (np.size(velocity_to_save)))
-    # Will add a custom header required by MD3D/MD2D
+    # Will add a custom header required by MANDYOC
     return np.savetxt(os.path.join(path, fname), velocity_to_save, header=HEADER)

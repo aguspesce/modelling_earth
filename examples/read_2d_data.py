@@ -6,13 +6,13 @@ from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 import modelling_earth as me
 
-# Get path to the MD3D output directory
+# Get path to the MANDYOC output directory
 script_path = os.path.dirname(os.path.abspath(__file__))
-md3d_output_path = os.path.join(script_path, "data", "data_2d")
+mandyoc_output_path = os.path.join(script_path, "data", "data_2d")
 
-# Read the MD3D output files
-dataset = me.read_md3d_data(
-    md3d_output_path, datasets=["temperature", "density", "velocity", "viscosity"]
+# Read the MANDYOC output files
+dataset = me.read_mandyoc_data(
+    mandyoc_output_path, datasets=["temperature", "density", "velocity", "viscosity"]
 )
 print(dataset)
 

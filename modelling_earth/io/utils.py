@@ -27,7 +27,7 @@ def _read_parameters(parameters_file):
     Returns
     -------
     parameters : dict
-        Dictionary containing the parameters of MD3D output files.
+        Dictionary containing the parameters of MANDYOC output files.
     """
     parameters = {}
     read_shape, read_max_coords = False, False
@@ -85,16 +85,17 @@ def _read_parameters(parameters_file):
 
 def _read_times(path, print_step, max_steps):
     """
-    Read the time files from the MD3D output
+    Read the time files from the MANDYOC output
 
     Parameters
     ----------
     path : str
-        Path to the folder where the MD3D output files are located.
+        Path to the folder where the MANDYOC output files are located.
     print_step : int
-        Only steps multiple of ``print_step`` are saved by MD3D.
+        Only steps multiple of ``print_step`` are saved by MANDYOC.
     max_steps : int
-        Maximum number of steps. MD3D could break computation before the ``max_steps``
+        Maximum number of steps. MANDYOC could break computation before the 
+``max_steps``
         are run if the maximum time is reached. This quantity only bounds the number of
         time files.
 
