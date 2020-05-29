@@ -2,7 +2,7 @@
 
 [![Travis CI](http://img.shields.io/travis/aguspesce/modelling_earth/master.svg?style=flat-square&label=TravisCI)](https://travis-ci.org/aguspesce/modelling_earth)
 
-Tools for building Earth models for geodynamics modelling.
+Tools for building Earth models for geodynamics modelling using MANDYOC code.
 
 
 ## How to install
