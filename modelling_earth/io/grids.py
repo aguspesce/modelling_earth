@@ -6,11 +6,7 @@ import numpy as np
 import xarray as xr
 import pandas as pd
 
-from .utils import (
-    _read_parameters,
-    _read_times,
-    PARAMETERS_FILE,
-)
+from .utils import _read_parameters, _read_times, PARAMETERS_FILE
 
 BASENAMES = {
     "temperature": "Temper",
@@ -37,9 +33,7 @@ DATASETS = (
 SCALARS_ON_NODES = DATASETS[:6]
 
 
-def read_mandyoc_data(
-    path, parameters_file=PARAMETERS_FILE, datasets=DATASETS
-):
+def read_mandyoc_data(path, parameters_file=PARAMETERS_FILE, datasets=DATASETS):
     """
     Read the MANDYOC output files
 

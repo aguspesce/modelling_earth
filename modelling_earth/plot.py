@@ -33,8 +33,8 @@ def plot_velocity_2d(dataset, ax, slice_grid=4, **kwargs):
             slice_x, slice_z = slice_grid[:]
         else:
             raise ValueError(
-                "Invalid arguement slice_grid '{}'."
-                + " Must be an integer or tuple of integers".format(slice_grid)
+                "Invalid arguement slice_grid '{}'.".format(slice_grid)
+                + "Must be an integer or tuple of integers"
             )
         dataset = dataset[
             dict(x=slice(None, None, slice_x), z=slice(None, None, slice_z))
