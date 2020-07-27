@@ -82,7 +82,7 @@ def litho_astheno_temperatures(
     # Initialize temperatures array
     temperatures = create_grid(coordinates)
     # Convert lid_depth to xarray.DataArray if it's a float
-    if type(lid_depth) is float or int:
+    if type(lid_depth) is float or type(lid_depth) is int:
         lid_depth = xr.full_like(temperatures.sel(z=temperatures.z[0]), lid_depth)
     # Compute temperature distribution for lithosphere (linear)
     temperatures += (
