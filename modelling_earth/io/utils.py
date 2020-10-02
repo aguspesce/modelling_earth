@@ -83,26 +83,26 @@ def _read_parameters(parameters_file):
 
 def _read_times(path, print_step, max_steps):
     """
-    Read the time files from the MANDYOC output
+        Read the time files from the MANDYOC output
 
-    Parameters
-    ----------
-    path : str
-        Path to the folder where the MANDYOC output files are located.
-    print_step : int
-        Only steps multiple of ``print_step`` are saved by MANDYOC.
-    max_steps : int
-        Maximum number of steps. MANDYOC could break computation before the
-``max_steps``
-        are run if the maximum time is reached. This quantity only bounds the number of
-        time files.
+        Parameters
+        ----------
+        path : str
+            Path to the folder where the MANDYOC output files are located.
+        print_step : int
+            Only steps multiple of ``print_step`` are saved by MANDYOC.
+        max_steps : int
+            Maximum number of steps. MANDYOC could break computation before the
+    ``max_steps``
+            are run if the maximum time is reached. This quantity only bounds the number of
+            time files.
 
-    Returns
-    -------
-    steps : numpy array
-        Array containing the saved steps.
-    times : numpy array
-        Array containing the time of each step in Ma.
+        Returns
+        -------
+        steps : numpy array
+            Array containing the saved steps.
+        times : numpy array
+            Array containing the time of each step in Ma.
     """
     steps, times = [], []
     for step in range(0, max_steps + print_step, print_step):
