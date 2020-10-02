@@ -2,11 +2,11 @@ name: modelling_earth
 channels:
     - conda-forge
 dependencies:
-    - python=3.7
+    - python=3.7.7
     - pip
     - numpy
     - scipy
-    - xarray
+    - xarray=0.15.1
     - pandas
     - pytables
     # Optional dependencies
@@ -15,6 +15,7 @@ dependencies:
     - jupyterlab
     - jupytext
     - ipython
+    - dask
     # Development requirements
     - black
     - pylint
